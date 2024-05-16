@@ -11,11 +11,16 @@
 
 <body>
 
+
     <div class="left"><img draggable="false" class="image" src="./styles/images/logo-b.png" alt="logo">
     </div>
     <div class="right">
         <div class="centered">
-
+            <?php
+            echo "<pre>";
+            print_r($_SESSION);
+            echo "</pre>";
+            ?>
             <?php
             if (isset($_POST['login'])) {
 
@@ -76,5 +81,23 @@
         </div>
     </div>
 </body>
+<script>
+    function updateRemainingTime() {
+        var remainingTimeElement = document.getElementById('remainingTime');
+        var remainingTime = parseInt(remainingTimeElement.innerHTML);
+        remainingTime--;
+
+        if (remainingTime <= 0) {
+            // Reload the page or perform any desired action
+            window.location.reload(); // For example, reload the page
+        } else {
+            remainingTimeElement.innerHTML = remainingTime;
+            setTimeout(updateRemainingTime, 1000); // Update every second
+        }
+    }
+
+    // Call the function initially
+    updateRemainingTime();
+</script>
 
 </html>

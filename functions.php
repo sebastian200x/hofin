@@ -141,12 +141,9 @@ function login($username, $password)
 	$result = $stmt->get_result();
 	$data = $result->fetch_assoc();
 
-	if ($data == NULL) {
-		return "Wrong username or password";
-	}
 
-	$max_attempts = 3;
-	$lockout_time = 300; // 5 minutes in seconds
+	$max_attempts = 2;
+	$lockout_time = 10; //300; 5 minutes in seconds
 
 	if (!isset($_SESSION['login_attempts'])) {
 		$_SESSION['login_attempts'] = [];
@@ -167,11 +164,12 @@ function login($username, $password)
 		(time() - $_SESSION['last_attempt'][$username]) < $lockout_time
 	) {
 		// Account is locked
+		$_SESSION['login_attempts'][$username] = 3;
 		$remaining_time = $lockout_time - (time() - $_SESSION['last_attempt'][$username]);
-		return "Account is locked. Please try again in $remaining_time seconds.";
+		return "Account is locked. Please try again in <span id='remainingTime'>$remaining_time</span> seconds.";
 	}
 
-	if (password_verify($password, $data["password"]) == false) {
+	if (password_verify($password, $data["password"]) == false || $data == NULL) {
 		if (!isset($_SESSION['last_attempt'][$username])) {
 			$_SESSION['last_attempt'][$username] = time();
 		}
@@ -184,7 +182,7 @@ function login($username, $password)
 		unset($_SESSION['last_attempt'][$username]);
 
 		$id = $data["user_id"];
-		$_SESSION["admin"] = $id;
+		$_SESSION["id"] = $id;
 		return 'success';
 	}
 }
