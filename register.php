@@ -9,13 +9,11 @@
     <?php include 'navbar.php'; ?>
 </head>
 
-<body style="margin-top:100px">
-
+<body>
     <div class="left">
         <video id="video" width="100%" height="auto" autoplay></video>
-        <small>
-            <center> Take a picture 3 times before you click save</center>
-        </small><br>
+            <p class="note">Take a picture 3 times before you click save</p>
+        <br>
         <button id="capture-btn" class="login">Capture</button>
     </div>
     <div class="right">
@@ -39,115 +37,115 @@
 
                     $folderName = $first_name . ' ' . $last_name;
                     $imageDataList = json_decode($_POST['image-data']);
+
                     if ($password == $confirm) {
+                        // Check if the fields are not empty
+                        if (!empty($first_name) && !empty($last_name) && !empty($imageDataList)) {
+                            // Function to create a folder
+                            function createFolder($folderName)
+                            {
+                                // Specify the directory where the folder will be created
+                                $directory = "face/labels/";
 
-                    }
-
-                    // Check if the fields are not empty
-                    if (!empty($first_name) && !empty($last_name) && !empty($imageDataList)) {
-                        // Function to create a folder
-                        function createFolder($folderName)
-                        {
-                            // Specify the directory where the folder will be created
-                            $directory = "face/labels/";
-
-                            // Check if the folder already exists
-                            if (!is_dir($directory . $folderName)) {
-                                // Create the folder
-                                if (mkdir($directory . $folderName, 0777, true)) {
+                                // Check if the folder already exists
+                                if (!is_dir($directory . $folderName)) {
+                                    // Create the folder
+                                    if (mkdir($directory . $folderName, 0777, true)) {
+                                        return true;
+                                    } else {
+                                        return false;
+                                    }
+                                } else {
                                     return true;
-                                } else {
-                                    return false;
                                 }
-                            } else {
-                                return true;
                             }
-                        }
 
-                        // Create folder if it doesn't exist
-                        if (!createFolder($folderName)) {
-                            echo '<div class="alert alert-danger" role="alert">Failed to create folder.</div>';
-                            exit;
-                        }
-
-                        // Save the images
-                        foreach ($imageDataList as $index => $imageData) {
-                            $imagePath = "face/labels/$folderName/" . ($index) . ".jpg";
-                            if (!file_put_contents($imagePath, base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $imageData)))) {
-                                echo '<div class="alert alert-danger" role="alert">Failed to save image $index.</div>';
-                            echo '<header class="error"> &#10060 Failed to save image $index.</header>';
-                            exit;
+                            // Create folder if it doesn't exist
+                            if (!createFolder($folderName)) {
+                                echo '<header class="error"> &#10060 Failed to create folder.</header>';
+                                exit;
                             }
-                        }
 
-                        // Prepare data to save to labels.json
-                        $dataToSave = array(
-                            'name' => $first_name . ' ' . $middle_name . ' ' . $last_name,
-                            'gender' => $gender,
-                            'bday' => $bday
-                        );
-
-                        // Read existing data from labels.json
-                        $labelsFilePath = './face/labels.json';
-                        $existingData = array();
-                        if (file_exists($labelsFilePath)) {
-                            $encryptedDataWithIV = file_get_contents($labelsFilePath);
-                            if ($encryptedDataWithIV !== false) {
-                                $iv_hex = substr($encryptedDataWithIV, 0, 32); // Extract IV from the beginning
-                                $encryptedData = substr($encryptedDataWithIV, 32); // Extract encrypted data without IV
-                                $decryptedData = openssl_decrypt($encryptedData, 'aes-256-cbc', 'Adm1n123', 0, hex2bin($iv_hex));
-                                if ($decryptedData !== false) {
-                                    $existingData = json_decode($decryptedData, true);
-                                } else {
-                            echo '<header class="error"> &#10060 Failed to decrypt data from labels.json.</header>';
-                            exit;
+                            // Save the images
+                            foreach ($imageDataList as $index => $imageData) {
+                                $imagePath = "face/labels/$folderName/" . ($index) . ".jpg";
+                                if (!file_put_contents($imagePath, base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $imageData)))) {
+                                    echo '<header class="error"> &#10060 Failed to save image $index.</header>';
+                                    exit;
                                 }
-                            } else {
-                            echo '<header class="error"> &#10060 Failed to read data from labels.json.</header>';
-                            exit;
                             }
-                        }
 
-                        // Check if the name already exists
-                        $nameExists = false;
-                        foreach ($existingData as $data) {
-                            if ($data['name'] == $dataToSave['name']) {
-                                $nameExists = true;
-                                break;
+                            // Prepare data to save to labels.json
+                            $dataToSave = array(
+                                'name' => $first_name . ' ' . $middle_name . ' ' . $last_name,
+                                'gender' => $gender,
+                                'bday' => $bday
+                            );
+
+                            // Read existing data from labels.json
+                            $labelsFilePath = './face/labels.json';
+                            $existingData = array();
+                            if (file_exists($labelsFilePath)) {
+                                $encryptedDataWithIV = file_get_contents($labelsFilePath);
+                                if ($encryptedDataWithIV !== false) {
+                                    $iv_hex = substr($encryptedDataWithIV, 0, 32); // Extract IV from the beginning
+                                    $encryptedData = substr($encryptedDataWithIV, 32); // Extract encrypted data without IV
+                                    $decryptedData = openssl_decrypt($encryptedData, 'aes-256-cbc', 'Adm1n123', 0, hex2bin($iv_hex));
+                                    if ($decryptedData !== false) {
+                                        $existingData = json_decode($decryptedData, true);
+                                    } else {
+                                        echo '<header class="error"> &#10060 Failed to decrypt data from labels.json.</header>';
+                                        exit;
+                                    }
+                                } else {
+                                    echo '<header class="error"> &#10060 Failed to read data from labels.json.</header>';
+                                    exit;
+                                }
                             }
-                        }
 
-                        if ($nameExists) {
-                            echo '<header class="error"> &#10060 Name already exists in the database.</header>';
-                            exit;
-                        }
+                            // Check if the name already exists
+                            $nameExists = false;
+                            foreach ($existingData as $data) {
+                                if ($data['name'] == $dataToSave['name']) {
+                                    $nameExists = true;
+                                    break;
+                                }
+                            }
 
-                        // Append new data to existing data
-                        $existingData[] = $dataToSave;
+                            if ($nameExists) {
+                                echo '<header class="error"> &#10060 Name already exists in the database.</header>';
+                                exit;
+                            }
 
-                        // Encrypt and write updated data back to labels.json
-                        $iv = openssl_random_pseudo_bytes(16); // Generate a random IV of 16 bytes (128 bits)
-                        $iv_hex = bin2hex($iv); // Convert the binary IV to hexadecimal representation
-                        $encryptedData = openssl_encrypt(json_encode($existingData), 'aes-256-cbc', 'Adm1n123', 0, $iv);
-                        $encryptedDataWithIV = $iv_hex . $encryptedData; // Combine IV and encrypted data
+                            // Append new data to existing data
+                            $existingData[] = $dataToSave;
+
+                            // Encrypt and write updated data back to labels.json
+                            $iv = openssl_random_pseudo_bytes(16); // Generate a random IV of 16 bytes (128 bits)
+                            $iv_hex = bin2hex($iv); // Convert the binary IV to hexadecimal representation
+                            $encryptedData = openssl_encrypt(json_encode($existingData), 'aes-256-cbc', 'Adm1n123', 0, $iv);
+                            $encryptedDataWithIV = $iv_hex . $encryptedData; // Combine IV and encrypted data
             
-                        if (file_put_contents($labelsFilePath, $encryptedDataWithIV)) {
-                            echo '<header class="error"> &#10060 Data saved successfully.</header>';
-                        } else {
-                            echo '<header class="error"> &#10060 Failed to save data to labels.json.</header>';
-                        }
+                            if (file_put_contents($labelsFilePath, $encryptedDataWithIV)) {
+                                echo '<header class="error"> &#10060 Data saved successfully.</header>';
+                            } else {
+                                echo '<header class="error"> &#10060 Failed to save data to labels.json.</header>';
+                            }
 
-                        // Redirect to index page after 2 seconds
-                        echo '<script>
+                            // Redirect to index page after 2 seconds
+                            echo '<script>
                 setTimeout(function() {
                     window.location.href = "?page=face";
                 }, 2000);
             </script>';
-                        exit; // Stop further execution
+                            exit; // Stop further execution
+                        } else {
+                            // Return error message if required fields are empty
+                            echo '<header class="error"> &#10060 Required fields are empty.</header>';
+                            exit;
+                        }
                     } else {
-                        // Return error message if required fields are empty
-                        echo '<header class="error"> &#10060 Required fields are empty.</header>';
-                        exit;
+                        echo '<header class="error"> &#10060 Passwords not the same</header>';
                     }
                 } else {
                     // Return error message if required keys are not set
@@ -158,7 +156,7 @@
             ?>
             <br>
 
-            <form action="/register" method="POST">
+            <form id="info-form" method="POST" enctype="multipart/form-data">
                 <h1 class="reg">Register Account</h1>
                 <div class="personal-information">
                     <h3 class="info">Personal Information</h3>
@@ -197,7 +195,10 @@
                     <h3 class="info">Account Information</h3>
 
                     <label for="username">Username</label>
-                    <input type="text" name="username" value="{{ username }}" required disabled>
+                    <?php
+                    $user = create_user();
+                    ?>
+                    <input type="text" name="username" value="<?php echo $user ?>" required readonly>
                     <p class="note">Please don't forget this, This will be your permanent username</p>
 
                     <div class="account-info">
@@ -224,7 +225,7 @@
 
                     <!-- <button class="button" id="hoverinbtn" type="submit">Register</button> -->
                     <input type="submit" class="login" value="Register">
-                    <a href="/login" class="login">Back</a>
+                    <a href="./index.php" class="login">Back</a>
 
             </form>
         </div>
