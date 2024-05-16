@@ -211,6 +211,7 @@ label {
     width: 49%;
 }
 
+
 @media (max-width: 660px) {
     .left {
         display: none;

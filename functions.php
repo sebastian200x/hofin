@@ -77,7 +77,7 @@ function register($username, $password, $confirm_password, $email)
 	$is_verified = "no";
 
 	$stmt = $mysqli->prepare("INSERT INTO tbl_useracc (username, password, email, is_admin, is_deleted, is_verified) VALUES (?, ?, ?, ?, ?, ?)");
-	$stmt->bind_param("ssssss", $username, $password, $email, $is_admin, $is_deleted, $is_verified);
+	$stmt->bind_param("ssssss", $username, $hashed_password, $email, $is_admin, $is_deleted, $is_verified);
 
 	// Execute the query
 	if ($stmt->execute()) {
