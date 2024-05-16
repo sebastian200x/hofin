@@ -1,0 +1,156 @@
+.left {
+    background-color: #f1f1f1;
+    width: 40%;
+    height: 100%;
+    position: fixed;
+}
+
+.right {
+    overflow: auto;
+    background-color: #6FB9B9;
+    width: 60%;
+    height: 100%;
+    position: fixed;
+    right: 0;
+
+}
+
+.centered {
+    margin-top: 100px;
+}
+
+form {
+    padding: 0 100px;
+}
+
+
+.image {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translate(-50%, -50%);
+    width: 75%;
+    left: 50%;
+}
+
+.imgcontainer {
+    text-align: center;
+    margin: 24px 0 12px 0;
+}
+
+input {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    font-size: 15px;
+    border-radius: 10px;
+
+}
+
+.container2 {
+    background-color: #6FB9B9;
+    width: 40%;
+    height: 100%;
+    position: fixed;
+}
+
+.container3 {
+    text-align: left;
+
+}
+
+.container4 {
+
+    width: 60%;
+    height: 100%;
+    position: fixed;
+    right: 0;
+
+}
+
+
+.imgcontainer {
+    text-align: center;
+    margin: 24px 0 12px 0;
+
+}
+
+img.avatar {
+    width: 20%;
+    border-radius: 50%;
+}
+
+.image {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    transform: translate(-50%, -50%);
+    width: 75%;
+    left: 50%;
+}
+
+.button {
+    background-color: #545454;
+    color: white;
+    padding: 15px 0px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    width: 40%;
+    display: block;
+    margin: 20px auto;
+}
+
+.wrong {
+    border: 3px solid #ff0000;
+}
+
+
+a.face-password-link {
+    background-color: #545454;
+    color: white;
+    padding: 15px 0px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    width: 40%;
+    display: block;
+    margin: 20px auto;
+    text-align: center;
+}
+
+a.face-password-link:hover,
+.button:hover {
+    background-color: #767676;
+}
+
+@media (max-width: 900px) {
+    .button {
+        width: 50%;
+    }
+
+    a.face-password-link {
+        width: 50%;
+    }
+}
+
+
+@media (max-width: 660px) {
+    .left {
+        display: none;
+    }
+
+    .right {
+        width: 100%;
+    }
+
+    .button {
+        width: 55%;
+    }
+
+    a.face-password-link {
+        width: 55%;
+    }
+}
