@@ -67,6 +67,18 @@ function register($username, $password, $confirm_password, $email)
 		return "Passwords do not match.";
 	}
 
+	// Check if the password is too long.
+	if (strlen($password) < 8) {
+		// If password is too long, return an error message.
+		return "Password is too short, must be 8-24 characters";
+	}
+
+	if (strlen($password) > 24) {
+		// If password is too long, return an error message.
+		return "Password is too long, must be 8-24 characters";
+	}
+
+
 	// Hash the password
 	$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
@@ -96,5 +108,83 @@ function register($username, $password, $confirm_password, $email)
 		$stmt->close();
 		$mysqli->close();
 		return "Registration failed.";
+	}
+}
+
+function login($username, $password)
+{
+
+	$mysqli = connect();
+
+	if (!$mysqli) {
+		return "Database connection error";
+	}
+
+	$username = trim($username);
+	$password = trim($password);
+
+	if ($username == "" || $password == "") {
+		return "Both fields are required";
+	}
+
+	$username = filter_var($username, FILTER_SANITIZE_STRING);
+	$password = filter_var($password, FILTER_SANITIZE_STRING);
+
+	$sql = "SELECT username, password, user_id FROM tbl_useracc WHERE username = ?";
+	$stmt = $mysqli->prepare($sql);
+	if (!$stmt) {
+		return "Database error: " . $mysqli->error;
+	}
+
+	$stmt->bind_param("s", $username);
+	$stmt->execute();
+	$result = $stmt->get_result();
+	$data = $result->fetch_assoc();
+
+	if ($data == NULL) {
+		return "Wrong username or password";
+	}
+
+	$max_attempts = 3;
+	$lockout_time = 300; // 5 minutes in seconds
+
+	if (!isset($_SESSION['login_attempts'])) {
+		$_SESSION['login_attempts'] = [];
+	}
+
+	if (!isset($_SESSION['last_attempt'])) {
+		$_SESSION['last_attempt'] = [];
+	}
+
+	if (!isset($_SESSION['login_attempts'][$username])) {
+		$_SESSION['login_attempts'][$username] = 1;
+	} else {
+		$_SESSION['login_attempts'][$username]++;
+	}
+
+	if (
+		$_SESSION['login_attempts'][$username] > $max_attempts &&
+		(time() - $_SESSION['last_attempt'][$username]) < $lockout_time
+	) {
+		// Account is locked
+		$remaining_time = $lockout_time - (time() - $_SESSION['last_attempt'][$username]);
+		return "Account is locked. Please try again in $remaining_time seconds.";
+	}
+
+	if (password_verify($password, $data["password"]) == false) {
+		if (!isset($_SESSION['last_attempt'][$username])) {
+			$_SESSION['last_attempt'][$username] = time();
+		}
+		return "Wrong username or password";
+	} else {
+		$_SESSION['login_attempts'][$username] = 0;
+		$_SESSION['last_attempt'][$username] = null;
+
+		unset($_SESSION['login_attempts'][$username]);
+		unset($_SESSION['last_attempt'][$username]);
+
+		$id = $data["user_id"];
+		$_SESSION["admin"] = $id;
+		return 'success';
 	}
 }

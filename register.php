@@ -12,12 +12,12 @@
 <body>
     <div class="left">
         <video id="video" width="100%" height="auto" autoplay></video>
-        <p class="note">Take a picture 3 times before you click save</p>
+        <p class="note">Take a picture 3 times before you click capture</p>
         <br>
         <button id="capture-btn" class="login">Capture</button>
     </div>
     <div class="right">
-        <div class="centered" style="margin-top: 120px">
+        <div class="centered">
             <?php
             if (isset($_POST['register'])) {
                 $given_name = $_POST['given_name'];
@@ -32,18 +32,35 @@
 
                 $response = register($username, $password, $confirm_password, $email);
                 if ($response == "success") {
-                    echo "<script>alert('Registration Successful! Please wait for the admin to approve your account')</script>";
-                } else {
-                    echo "<script>
-                    alert('" . $response . "')
-                    </script>";
+
+                    $_POST['given_name'] = '';
+                    $_POST['middle_name'] = '';
+                    $_POST['last_name'] = '';
+
+                    $_POST['username'] = '';
+                    $_POST['password'] = '';
+
+                    $_POST['confirm'] = '';
+                    $_POST['email'] = '';
+
 
                     echo "<label>
                     <input type='checkbox' class='alertCheckbox' autocomplete='off' />
                     <div class='alert successa'>
                         <span class='alertClose'>X</span>
                         <span class='alertText'>
-                        '" . $response . "'
+                        <i class='fa-solid fa-check'></i> Registration Successful! Please wait for the admin to approve your account
+                        <br class='clear' /></span>
+                    </div>
+                    </label>";
+                } else {
+
+                    echo "<label>
+                    <input type='checkbox' class='alertCheckbox' autocomplete='off' />
+                    <div class='alert warna'>
+                        <span class='alertClose'>X</span>
+                        <span class='alertText'>
+                        <i class='fa-solid fa-x'></i> " . $response . "
                         <br class='clear' /></span>
                     </div>
                     </label>";
@@ -62,11 +79,11 @@
                         <div class="personal-info-col"><label for="middle-name">Middle Name</label></div>
                         <div class="personal-info-col"><label for="last-name">Last Name</label></div>
                         <div class="personal-info-col"><input type="text" name="given_name" required autofocus
-                                placeholder="First Name"></div>
+                                placeholder="First Name" value="<?php echo @$_POST['given_name']; ?>"></div>
                         <div class="personal-info-col"><input type="text" name="middle_name" required
-                                placeholder="Middle Name"></div>
+                                placeholder="Middle Name" value="<?php echo @$_POST['middle_name']; ?>"></div>
                         <div class="personal-info-col-last"><input type="text" name="last_name" required
-                                placeholder="Last Name"></div>
+                                placeholder="Last Name" value="<?php echo @$_POST['last_name']; ?>"></div>
                     </div>
                     <div class="double-half">
                         <div class="personal-half">
@@ -81,7 +98,8 @@
                         </div>
                         <div class="personal-half">
                             <label for="birthday">Birthday
-                                <input type="date" name="bday" max="<?php echo date('Y-m-d'); ?>" id="bday" required>
+                                <input type="date" name="bday" max="<?php echo date('Y-m-d'); ?>" id="bday"
+                                    value="<?php echo @$_POST['bday']; ?>" required>
                             </label>
                         </div>
                     </div>
@@ -102,20 +120,34 @@
                         <div class="account-info-col"><label for="confirm-password">Confirm Password</label></div>
                         <div class="account-info-col">
                             <input type="password" name="password" required placeholder="Password"
-                                pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}"
-                                title="Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 symbol, and be at least 8 characters long">
-
+                                pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+]).{8,}"
+                                title="Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 symbol, and be at least 8 characters long"
+                                value="<?php echo @$_POST['confirm']; ?>" class="<?php
+                                   if ($response == 'Passwords do not match.' || $response == 'Password is too short, must be 8-24 characters' || $response == 'Password is too long, must be 8-24 characters') {
+                                       echo 'wrong';
+                                   } else {
+                                       echo '';
+                                   }
+                                   ?>">
                         </div>
                         <div class="account-info-col-last">
                             <input type="password" name="confirm" required placeholder="Confirm Password"
-                                class="{% if (messager == 1 )%}wrong{% endif %}"
                                 pattern="(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[!@#$%^&*()_+])[A-Za-z\d!@#$%^&*()_+]{8,}"
-                                title="Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 symbol, and be at least 8 characters long">
+                                title="Password must contain at least 1 uppercase letter, 1 lowercase letter, 1 number, and 1 symbol, and be at least 8 characters long"
+                                value="<?php echo @$_POST['confirm']; ?>" class="<?php
+                                   if ($response == 'Passwords do not match.' || $response == 'Password is too short, must be 8-24 characters' || $response == 'Password is too long, must be 8-24 characters') {
+                                       echo 'wrong';
+                                   } else {
+                                       echo '';
+                                   }
+                                   ?>">
+
                         </div>
                     </div>
 
                     <label for="email">Email
-                        <input type="email" name="email" placeholder="Email" required>
+                        <input type="email" name="email" placeholder="Email" value="<?php echo @$_POST['email']; ?>"
+                            required>
                     </label>
 
                     <!-- <button class="button" id="hoverinbtn" type="submit">Register</button> -->
