@@ -53,7 +53,7 @@ function create_user()
 }
 
 
-function register()
+function register($username, $password, $confirm_password, $email)
 {
 	// Establish a database connection.
 	$mysqli = connect();
@@ -62,35 +62,39 @@ function register()
 		return false;
 	}
 
-	$first_name = trim(filter_input(INPUT_POST, 'first_name', FILTER_SANITIZE_STRING));
-	$middle_name = trim(filter_input(INPUT_POST, 'middle_name', FILTER_SANITIZE_STRING));
-	$last_name = trim(filter_input(INPUT_POST, 'last_name', FILTER_SANITIZE_STRING));
-
-	$gender = trim(filter_input(INPUT_POST, 'gender', FILTER_SANITIZE_STRING));
-	$bday = trim(filter_input(INPUT_POST, 'bday', FILTER_SANITIZE_STRING));
-
-	$password = trim(filter_input(INPUT_POST, 'password', FILTER_SANITIZE_STRING));
-	$confirm_password = trim(filter_input(INPUT_POST, 'confirm', FILTER_SANITIZE_STRING));
-	$email = trim(filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL));
-
-
-	$args = func_get_args();
-	foreach ($args as $value) {
-		if (empty($value)) {
-			// If any field is empty, return an error message.
-			return "All fields are required";
-		}
+	// Check if the passwords match
+	if ($password !== $confirm_password) {
+		return "Passwords do not match.";
 	}
 
-	// Check for disallowed characters (< and >).
-	foreach ($args as $value) {
-		if (preg_match("/([<|>])/", $value)) {
-			// If disallowed characters are found, 
-			// return an error message.
-			return "< and > characters are not allowed";
-		}
+	// Hash the password
+	$hashed_password = password_hash($password, PASSWORD_DEFAULT);
+
+	// Prepare the SQL query
+
+	$is_admin = "no";
+	$is_deleted = "no";
+	$is_verified = "no";
+
+	$stmt = $mysqli->prepare("INSERT INTO tbl_useracc (username, password, email, is_admin, is_deleted, is_verified) VALUES (?, ?, ?, ?, ?, ?)");
+	$stmt->bind_param("ssssss", $username, $password, $email, $is_admin, $is_deleted, $is_verified);
+
+	// Execute the query
+	if ($stmt->execute()) {
+		// Close the statement and connection
+		$stmt->close();
+		$mysqli->close();
+		return "success";
+	} else {
+		// If there's an error, log it
+		$error = $stmt->error;
+		$error_date = date("F j, Y, g:i a");
+		$message = "{$error} | {$error_date} \r\n";
+		file_put_contents("db-log.txt", $message, FILE_APPEND);
+
+		// Close the statement and connection
+		$stmt->close();
+		$mysqli->close();
+		return "Registration failed.";
 	}
-
-	
-
 }
