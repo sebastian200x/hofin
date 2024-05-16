@@ -19,6 +19,7 @@
             <?php
             echo "<pre>";
             print_r($_SESSION);
+            echo time();
             echo "</pre>";
             ?>
             <?php
@@ -88,7 +89,6 @@
         remainingTime--;
 
         if (remainingTime <= 0) {
-            // Reload the page or perform any desired action
             window.location.reload(); // For example, reload the page
         } else {
             remainingTimeElement.innerHTML = remainingTime;

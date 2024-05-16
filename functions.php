@@ -159,6 +159,22 @@ function login($username, $password)
 		$_SESSION['login_attempts'][$username]++;
 	}
 
+
+	if (
+		$_SESSION['login_attempts'][$username] > $max_attempts
+	) {
+		if (!isset($_SESSION['last_attempt'][$username])) {
+			$_SESSION['last_attempt'][$username] = time();
+		}
+	}
+
+	if (
+		$_SESSION['login_attempts'][$username] >= 3 && (time() - $_SESSION['last_attempt'][$username]) > $lockout_time
+	) {
+		$_SESSION['login_attempts'][$username] = 1;
+		$_SESSION['last_attempt'][$username] = null;
+	}
+
 	if (
 		$_SESSION['login_attempts'][$username] > $max_attempts &&
 		(time() - $_SESSION['last_attempt'][$username]) < $lockout_time
@@ -169,10 +185,10 @@ function login($username, $password)
 		return "Account is locked. Please try again in <span id='remainingTime'>$remaining_time</span> seconds.";
 	}
 
+
+
 	if (password_verify($password, $data["password"]) == false || $data == NULL) {
-		if (!isset($_SESSION['last_attempt'][$username])) {
-			$_SESSION['last_attempt'][$username] = time();
-		}
+
 		return "Wrong username or password";
 	} else {
 		$_SESSION['login_attempts'][$username] = 0;
