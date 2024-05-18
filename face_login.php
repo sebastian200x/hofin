@@ -58,12 +58,9 @@ try {
             </div>
         </div>
 </body>
-<!-- Output $labelsArray as a JavaScript variable -->
-<script>
-    const labelsArray = <?php echo json_encode($labelsArray); ?>;
-</script>
 
 <script>
+    const labelsArray = <?php echo json_encode($labelsArray); ?>;
     const video = document.getElementById("video");
     const overlay = document.getElementById("overlay");
     const confidenceDisplay = document.getElementById("confidence");
