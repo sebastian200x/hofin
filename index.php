@@ -68,14 +68,26 @@
 
                 <input type="text" name="username" id="uname" pattern="^\S{3,}$"
                     title="Username must have 3 characters and cannot have spaces" placeholder="Enter Username" required
-                    autocomplete="false" value="<?php echo @$_POST['username']; ?>" autofocus>
+                    autocomplete="false" value="<?php echo @$_POST['username']; ?>" class="<?php
+                       if (isset($response) && $response != 'success') {
+                           echo 'wrong';
+                       } else {
+                           echo '';
+                       }
+                       ?>">
                 <br><br>
                 <label for="psw">Password:</label>
                 <input type="password" name="password" id="psw" pattern="^\S{3,}$"
                     title="Password must have 3 characters and cannot have spaces" placeholder="Enter Password" required
-                    value="<?php echo @$_POST['password']; ?>" autocomplete="false">
+                    value="<?php echo @$_POST['password']; ?>" autocomplete="false" class="<?php
+                       if (isset($response) && $response != 'success') {
+                           echo 'wrong';
+                       } else {
+                           echo '';
+                       }
+                       ?>">
                 <input type="submit" class="button" value="Login" name="login">
-                <a href="#" class="face-password-link">Face Login</a>
+                <a href="./face_login.php" class="face-password-link">Face Login</a>
                 <a href="./register.php" class="face-password-link">Register</a>
             </form>
 
@@ -95,9 +107,11 @@
             setTimeout(updateRemainingTime, 1000); // Update every second
         }
     }
-
     // Call the function initially
     updateRemainingTime();
+
+
+
 </script>
 
 </html>

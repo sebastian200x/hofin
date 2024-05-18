@@ -306,3 +306,11 @@ ul {
     border: 1px solid #e20000;
     color: #fff;
 }
+
+.graya{
+    background-color: #acacac;
+    border: 1px solid #4e4e4e;
+    color: #000000;
+    cursor: default;
+    text-align: center;
+}

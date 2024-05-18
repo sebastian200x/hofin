@@ -11,6 +11,9 @@
 
 <body>
     <div class="left">
+        <div class='alert graya'>
+            Captured Image: <p id="captureCountDisplay"></p>
+        </div>
         <video id="video" width="100%" height="auto" autoplay></video>
         <p class="note">Take a picture 3 times before you click capture</p>
         <br>
@@ -19,7 +22,10 @@
     <div class="right">
         <div class="centered">
             <?php
-            if (isset($_POST['register'])) {
+
+
+            if ($_SERVER["REQUEST_METHOD"] === "POST") {
+
                 $given_name = $_POST['given_name'];
                 $middle_name = $_POST['middle_name'];
                 $last_name = $_POST['last_name'];
@@ -27,10 +33,11 @@
                 $username = $_POST['username'];
                 $password = $_POST['password'];
 
-                $confirm_password = $_POST['confirm'];
+                $confirm = $_POST['confirm'];
                 $email = $_POST['email'];
 
-                $response = register($username, $password, $confirm_password, $email);
+                $image_data = json_decode($_POST['image-data']);
+                $response = register($given_name, $middle_name, $last_name, $username, $password, $confirm, $email, $image_data);
                 if ($response == "success") {
 
                     $_POST['given_name'] = '';
@@ -42,7 +49,6 @@
 
                     $_POST['confirm'] = '';
                     $_POST['email'] = '';
-
 
                     echo "<label>
                     <input type='checkbox' class='alertCheckbox' autocomplete='off' />
@@ -69,7 +75,7 @@
 
             ?>
             <br>
-            <form action="" method="POST" enctype="multipart/form-data">
+            <form id="info-form" method="post" enctype="multipart/form-data">
                 <h1 class="reg">Register Account</h1>
                 <div class="personal-information">
                     <h3 class="info">Personal Information</h3>
@@ -141,7 +147,6 @@
                                        echo '';
                                    }
                                    ?>">
-
                         </div>
                     </div>
 
@@ -150,8 +155,9 @@
                             required>
                     </label>
 
-                    <!-- <button class="button" id="hoverinbtn" type="submit">Register</button> -->
-                    <input type="submit" name="register" class="login" value="Register">
+                    <input type="hidden" id="image-data" name="image-data">
+                    <button type="submit" class="button" id="submit-btn" class="login"
+                        title="Please capture 3 times before registering" disabled>Register</button>
                     <a href="./index.php" class="login">Back</a>
             </form>
         </div>
@@ -163,8 +169,9 @@
     <script>
         const video = document.getElementById('video');
         const captureBtn = document.getElementById('capture-btn');
+        const submitBtn = document.getElementById('submit-btn');
         const imageDataInput = document.getElementById('image-data');
-        let captureCount = 1;
+        let captureCount = 0;
         let capturedImages = [];
 
         navigator.mediaDevices.getUserMedia({ video: true })
@@ -174,9 +181,8 @@
             .catch(error => {
                 console.error('Error accessing camera:', error);
             });
-
         captureBtn.addEventListener('click', () => {
-            if (captureCount < 3) {
+            if (captureCount < 3) { // Capture three images
                 const canvas = document.createElement('canvas');
                 const context = canvas.getContext('2d');
                 canvas.width = video.videoWidth;
@@ -184,21 +190,24 @@
                 context.drawImage(video, 0, 0, canvas.width, canvas.height);
                 const imageData = canvas.toDataURL('image/jpeg');
                 capturedImages.push(imageData);
-                alert('Image captured ' + captureCount);
-                if (captureCount === 3) {
+                document.getElementById('captureCountDisplay').textContent = (captureCount + 1); // Update the capture count in the HTML
+                if (captureCount >= 2) { // Disable button after capturing three images
                     captureBtn.disabled = true;
+                    submitBtn.disabled = false; // Enable the submit button after capturing three images
                 }
             } else {
                 alert('You have captured the maximum number of photos.');
+                submitBtn.disabled = false; // Enable the submit button if the user wants to proceed without capturing more images
             }
-            captureCount++;
+            captureCount++; // Increment the capture count
         });
 
-        // document.getElementById('info-form').addEventListener('submit', event => {
-        //     event.preventDefault();
-        //     imageDataInput.value = JSON.stringify(capturedImages);
-        //     document.getElementById('info-form').submit(); // Submit the form
-        // });
+
+        document.getElementById('info-form').addEventListener('submit', event => {
+            event.preventDefault();
+            imageDataInput.value = JSON.stringify(capturedImages);
+            document.getElementById('info-form').submit(); // Submit the form
+        });
     </script>
 
 

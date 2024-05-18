@@ -211,6 +211,11 @@ label {
     width: 49%;
 }
 
+:disabled {
+    cursor: not-allowed;
+    background-color: #c4c4c4;
+}
+
 
 @media (max-width: 660px) {
     .left {
