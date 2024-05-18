@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Canvas Example</title>
+</head>
+<body>
+  <canvas id="overlay" width="500" height="400"></canvas>
+  <script>
+    const overlay = document.getElementById("overlay");
+    const context = overlay.getContext("2d");
+
+    function draw() {
+      // Clear the entire canvas
+      context.clearRect(0, 0, overlay.width, overlay.height);
+      
+      // Set the fill color
+      context.fillStyle = "blue";
+      // Fill a rectangle
+      context.fillRect(50, 50, 100, 100);
+
+      // Set the outline color
+      context.strokeStyle = "red"; 
+      // Change this to the desired outline color
+      // Set the line width (optional)
+      context.lineWidth = 2; 
+      // Change this to adjust the outline thickness
+
+      // Draw the outline of the rectangle
+      context.strokeRect(50, 50, 100, 100);
+
+      // More drawing code can go here
+    }
+
+    // Example animation loop
+    function animate() {
+      draw();
+      requestAnimationFrame(animate);
+    }
+
+    animate();
+  </script>
+</body>
+</html>

@@ -40,17 +40,55 @@ try {
 </head>
 
 <body>
+
+
   <div class="left">
     <div class="centered">
+
+      <?php
+      echo "<pre>";
+      print_r($_SESSION);
+      echo time();
+      echo "</pre>";
+      if ($_SERVER["REQUEST_METHOD"] == "POST") {
+
+        $username = $_POST['username'];
+        $password = $_POST['password'];
+
+        $response = login($username, $password);
+        if ($response != "success") {
+          echo "<label>
+                    <input type='checkbox' class='alertCheckbox' autocomplete='off' />
+                    <div class='alert warna'>
+                        <span class='alertClose'>X</span>
+                        <span class='alertText'>
+                        <i class='fa-solid fa-x'></i> " . $response . "
+                        <br class='clear' /></span>
+                    </div>
+                    </label>";
+        } else {
+          echo "<label>
+                    <input type='checkbox' class='alertCheckbox' autocomplete='off' />
+                    <div class='alert successa'>
+                        <span class='alertClose'>X</span>
+                        <span class='alertText'>
+                        <i class='fa-solid fa-check'></i> Login Success
+                        <br class='clear' /></span>
+                    </div>
+                    </label>";
+        }
+      }
+      ?>
+
       <h1>Face Scan Here:</h1>
       <video id="video" width="640" height="480" autoplay></video>
       <canvas id="overlay" class="overlay"></canvas>
       <form id="facelogin" method="post" action="">
-        <!-- <input type="hidden" id="confidenceScoreInput" name="confidence_score">
-        <input type="hidden" id="userNameInput" name="user_name"> -->
+
+        <span id="usernamespan" hidden class="display: none; visibility: hidden;"></span>
+        <span id="passwordspan" hidden class="display: none; visibility: hidden;"></span>
         <input type="hidden" id="username" name="username">
         <input type="hidden" id="password" name="password">
-
 
         <button disabled id="submitButton" type="submit" name="submitButton" class="login">Login</button>
         <a href="./index.php" class="login">Back</a>
@@ -64,14 +102,7 @@ try {
         <img id="relatedImage" class="relatedImageContainer" src="./face/labels/Unknown/0.jpg">
       </div>
       <div id="confidence"></div>
-
-
       <br>
-      <div><strong>Name:</strong> <span id="userName"></span></div>
-      <div><strong>Username:</strong> <span id="userAddress"></span></div>
-      <div><strong>Password</strong> <span id="userMobile"></span></div>
-      <!-- <div><strong>Birthday:</strong> <span id="userBirthday"></span></div> -->
-
     </div>
 </body>
 
@@ -80,25 +111,29 @@ try {
   const video = document.getElementById("video");
   const overlay = document.getElementById("overlay");
   const relatedImageContainer = document.getElementById("relatedImageContainer");
-  const userNameSpan = document.getElementById("userName");
-  const userAddressSpan = document.getElementById("userAddress");
-  const userMobileSpan = document.getElementById("userMobile");
-  const userBirthdaySpan = document.getElementById("userBirthday");
+
+  const usernamespan = document.getElementById("usernamespan");
+  const passwordspan = document.getElementById("passwordspan");
+
   const confidenceDisplay = document.getElementById("confidence");
   const submitButton = document.getElementById("submitButton");
+
   const displaySize = { width: video.width, height: video.height };
 
+  // Submit form and container
   document.addEventListener("DOMContentLoaded", function () {
     const submitButton = document.getElementById("submitButton");
-    const confidenceScoreInput = document.getElementById("confidenceScoreInput");
-    const userNameInput = document.getElementById("userNameInput");
+
+    const usernameinput = document.getElementById("username");
+    const passwordinput = document.getElementById("password");
 
     submitButton.addEventListener("click", () => {
-      const confidenceScore = confidenceDisplay.innerText.split(": ")[1];
-      const userName = userNameSpan.textContent;
 
-      confidenceScoreInput.value = confidenceScore;
-      userNameInput.value = userName;
+      const username = usernamespan.textContent;
+      const password = passwordspan.textContent;
+
+      usernameinput.value = username;
+      passwordinput.value = password;
 
       document.getElementById("facelogin").submit();
     });
@@ -159,20 +194,21 @@ try {
                 if (bestMatch && bestMatchScore >= 0.6) {
                   const relatedImageSrc = `./face/labels/${bestMatch.label}/1.jpg`;
                   updateRelatedImage(relatedImageSrc);
-
                   displayUserDetails(bestMatch.label);
                   confidenceDisplay.innerText = `Confidence Score: ${parseFloat((bestMatchScore).toFixed(2))}`;
+
                   submitButton.disabled = false;
                 } else {
+
                   submitButton.disabled = true;
-                  userNameSpan.textContent = "Unknown";
-                  userAddressSpan.textContent = "";
-                  userMobileSpan.textContent = "";
-                  userBirthdaySpan.textContent = "";
+                  usernamespan.textContent = "";
+                  passwordspan.textContent = "";
                   confidenceDisplay.innerText = "Confidence Score: N/A";
+
                   // Set the related image to the placeholder for "Unknown"
                   updateRelatedImage("./face/labels/Unknown/0.jpg");
                 }
+                // Draw the outline with the specified color
               }, 100);
             });
           };
@@ -205,7 +241,7 @@ try {
               if (detections) {
                 descriptions.push(detections.descriptor);
               } else {
-                // console.log(`No face detected in image ${i} for label ${name}`);
+                console.log(`No face detected in image ${i} for label ${name}`);
               }
             } catch (error) {
               console.error(`Error fetching image ${i} for label ${name}:`, error);
@@ -236,21 +272,11 @@ try {
     try {
       const user = labelsArray.find(item => item.name === label);
       if (user) {
-        userNameSpan.textContent = user.name;
-        userAddressSpan.textContent = user.username;
-        userMobileSpan.textContent = user.password;
-        const formattedBirthday = new Date(user.birthday).toLocaleDateString('en-US', {
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric'
-        });
-        userBirthdaySpan.textContent = formattedBirthday;
-        const container = document.querySelector('.container');
+        usernamespan.textContent = user.username;
+        passwordspan.textContent = user.password;
       } else {
-        userNameSpan.textContent = "";
-        userAddressSpan.textContent = "";
-        userMobileSpan.textContent = "";
-        userBirthdaySpan.textContent = "";
+        usernamespan.textContent = "";
+        passwordspan.textContent = "";
       }
     } catch (error) {
       console.error('Error displaying user details:', error);
