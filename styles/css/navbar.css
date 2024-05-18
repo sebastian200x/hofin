@@ -100,7 +100,10 @@ ul {
 
 .user img {
     width: 150px;
+    height: 150px;
     border-radius: 50%;
+    object-fit: cover;
+    object-position: center;
 }
 
 .user p {
@@ -307,7 +310,7 @@ ul {
     color: #fff;
 }
 
-.graya{
+.graya {
     background-color: #acacac;
     border: 1px solid #4e4e4e;
     color: #000000;

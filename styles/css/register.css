@@ -136,6 +136,18 @@ label {
     color: #545454;
     text-align: center;
     margin-bottom: 10px;
+    user-select: none;
+    
+}
+
+.note1 {
+    color: #545454;
+    text-align: center;
+    margin-bottom: 10px;
+    font-weight: 1000;
+    font-size: larger;
+    user-select: none;
+
 }
 
 .not-confirmed {

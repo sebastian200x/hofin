@@ -10,12 +10,27 @@ require (__DIR__ . '/functions.php');
 
 <nav class="navbar" style="user-select: none;">
 
-  <!-- <a class="btn disabled">&#8801;</a> -->
-  <a href="#sidenav" class="btn open">&#8801;</a>
+  <?php
+  $current_page = basename($_SERVER['PHP_SELF']);
+  if ($current_page == "index.php" || $current_page == "" || $current_page == "face_login.php" || $current_page == "register.php") {
+    ?>
+    <a class="btn disabled">&#8801;</a>
+    <?php
+  } else {
+    ?>
+    <a href="#sidenav" class="btn open">&#8801;</a>
+    <?php
+  }
+  ?>
   <div class="sidenav" id="sidenav">
     <ul>
       <li class="center user">
-        <!-- <img src="https://picsum.photos/300/300" alt="User" /> -->
+        <img draggable="false" src="./face/labels/noprofile.jpg" alt="User" />
+        <?php if (isset($_SESSION['fullname'])) {
+
+          echo $_SESSION['fullname'];
+        }
+        ?>
         <!-- <p>{{session['fullname']}}</p> -->
       </li>
 

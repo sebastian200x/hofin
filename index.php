@@ -17,10 +17,10 @@
     <div class="right">
         <div class="centered">
             <?php
-            echo "<pre>";
-            print_r($_SESSION);
-            echo time();
-            echo "</pre>";
+            // echo "<pre>";
+            // print_r($_SESSION);
+            // echo time();
+            // echo "</pre>";
             ?>
             <?php
             if (isset($_POST['login'])) {

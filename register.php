@@ -15,15 +15,17 @@
             Captured Image: <p id="captureCountDisplay"></p>
         </div>
         <video id="video" width="100%" height="auto" autoplay></video>
-        <p class="note">Take a picture 3 times before you click capture</p>
+        <p class="note1">
+            - Please take picture on well lit area <br>
+            - Capture 3 times before proceeding to registration <br>
+            - If there's an error, CAPTURE again
+        </p>
         <br>
         <button id="capture-btn" class="login">Capture</button>
     </div>
     <div class="right">
         <div class="centered">
             <?php
-
-
             if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
                 $given_name = $_POST['given_name'];
@@ -72,7 +74,6 @@
                     </label>";
                 }
             }
-
             ?>
             <br>
             <form id="info-form" method="post" enctype="multipart/form-data">
@@ -115,10 +116,8 @@
                     <h3 class="info">Account Information</h3>
 
                     <label for="username">Username</label>
-                    <?php
-                    $user = create_user();
-                    ?>
-                    <input type="text" name="username" value="<?php echo $user ?>" required readonly>
+                    <input type="text" name="username" value="<?php $user = create_user();
+                    echo $user ?>" required readonly>
                     <p class="note">Please don't forget this, This will be your permanent username</p>
 
                     <div class="account-info">
@@ -191,6 +190,7 @@
                 const imageData = canvas.toDataURL('image/jpeg');
                 capturedImages.push(imageData);
                 document.getElementById('captureCountDisplay').textContent = (captureCount + 1); // Update the capture count in the HTML
+                document.getElementById('captureCountDisplay').style.fontWeight = "bold";
                 if (captureCount >= 2) { // Disable button after capturing three images
                     captureBtn.disabled = true;
                     submitBtn.disabled = false; // Enable the submit button after capturing three images

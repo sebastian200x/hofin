@@ -266,7 +266,6 @@ function login($username, $password)
 		$_SESSION['login_attempts'][$username]++;
 	}
 
-
 	if (
 		$_SESSION['login_attempts'][$username] > $max_attempts
 	) {
@@ -301,6 +300,14 @@ function login($username, $password)
 
 		$id = $data["user_id"];
 		$_SESSION["id"] = $id;
+
+		echo "  <script>
+		// Simulate loading delay
+		setTimeout(function() {
+		  // Redirect to another page after 3 seconds
+		  window.location.href = '#';
+		}, 3000); // 3000 milliseconds = 3 seconds
+	  </script>";
 		return 'success';
 	}
 }
