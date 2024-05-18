@@ -1,4 +1,5 @@
 #video {
+    position: absolute;
     transform: scaleX(-1);
     /* This flips the video horizontally */
     -webkit-transform: scaleX(-1);
@@ -11,7 +12,7 @@
 
 
 .overlay {
-    position: absolute;
+    position: relative;
     transform: scaleX(-1);
     /* This flips the video horizontally */
     -webkit-transform: scaleX(-1);
@@ -20,18 +21,19 @@
     /* Ensures the flip happens around the center */
     -webkit-transform-origin: center;
     /* For Safari */
-    top: 0;
-    left: 0;
+    /* top: 0; */
+    left: 0%;
 }
 
 .relatedImageContainer {
-    width: 50%;
-    height: 50%;
+    width: 75%;
+    height: 25%;
+
 }
 
 .left {
     background-color: #f1f1f1;
-    width: 40%;
+    width: 50%;
     height: 100%;
     position: fixed;
 }
@@ -39,7 +41,7 @@
 .right {
 
     background-color: #6FB9B9;
-    width: 60%;
+    width: 50%;
     height: 100%;
     position: fixed;
     right: 0;
@@ -48,11 +50,11 @@
 
 .centered {
     width: 90%;
-    position: absolute;
+    position: relative;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #6FB9B9
+    text-align: center;
 }
 
 .image {
@@ -63,6 +65,7 @@
     width: 75%;
     left: 50%;
 }
+
 
 .imgcontainer {
     text-align: center;
@@ -117,12 +120,16 @@
     padding: 15px 0px;
     border-radius: 10px;
     border: none;
-    cursor: pointer;
     font-size: 20px;
     width: 40%;
     display: block;
     margin: 20px auto;
     text-align: center;
+}
+
+:disabled {
+    background-color: #acacac;
+    cursor: not-allowed;
 }
 
 .login:hover {

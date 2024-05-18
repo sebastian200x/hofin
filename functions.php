@@ -306,7 +306,59 @@ function login($username, $password)
 }
 
 
-function face_login()
+function update_password($given_name, $middle_name, $last_name, $username, $password)
 {
 
+	// Prepare data to save to labels.json
+	$dataToSave = array(
+		'name' => $given_name . ' ' . $middle_name . ' ' . $last_name,
+		'username' => $username,
+		'password' => $password,
+	);
+
+	// Read existing data from labels.json
+	$labelsFilePath = './face/labels.json';
+	$existingData = array();
+	if (file_exists($labelsFilePath)) {
+		$encryptedDataWithIV = file_get_contents($labelsFilePath);
+		if ($encryptedDataWithIV !== false) {
+			$iv_hex = substr($encryptedDataWithIV, 0, 32); // Extract IV from the beginning
+			$encryptedData = substr($encryptedDataWithIV, 32); // Extract encrypted data without IV
+			$decryptedData = openssl_decrypt($encryptedData, 'aes-256-cbc', 'Adm1n123', 0, hex2bin($iv_hex));
+			if ($decryptedData !== false) {
+				$existingData = json_decode($decryptedData, true);
+			} else {
+				return 'Failed to decrypt data from labels.json.';
+			}
+		} else {
+			return 'Failed to read data from labels.json.';
+		}
+	}
+
+	// Check if the username already exists and update the data if it does
+	$userExists = false;
+	foreach ($existingData as &$data) {
+		if ($data['username'] == $dataToSave['username']) {
+			$data = $dataToSave; // Update existing user data
+			$userExists = true;
+			break;
+		}
+	}
+
+	// If the user does not exist, append new data
+	if (!$userExists) {
+		$existingData[] = $dataToSave;
+	}
+
+	// Encrypt and write updated data back to labels.json
+	$iv = openssl_random_pseudo_bytes(16); // Generate a random IV of 16 bytes (128 bits)
+	$iv_hex = bin2hex($iv); // Convert the binary IV to hexadecimal representation
+	$encryptedData = openssl_encrypt(json_encode($existingData), 'aes-256-cbc', 'Adm1n123', 0, $iv);
+	$encryptedDataWithIV = $iv_hex . $encryptedData; // Combine IV and encrypted data
+
+	if (file_put_contents($labelsFilePath, $encryptedDataWithIV)) {
+		return "success";
+	} else {
+		return "Failed to save data to labels.json.";
+	}
 }

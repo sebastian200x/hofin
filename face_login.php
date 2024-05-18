@@ -41,39 +41,37 @@ try {
 
 <body>
   <div class="left">
-    <img draggable="false" class="image" src="styles/images/logo-b.png" alt="logo">
+    <div class="centered">
+      <h1>Face Scan Here:</h1>
+      <video id="video" width="640" height="480" autoplay></video>
+      <canvas id="overlay" class="overlay"></canvas>
+      <form id="facelogin" method="post" action="">
+        <!-- <input type="hidden" id="confidenceScoreInput" name="confidence_score">
+        <input type="hidden" id="userNameInput" name="user_name"> -->
+        <input type="hidden" id="username" name="username">
+        <input type="hidden" id="password" name="password">
+
+
+        <button disabled id="submitButton" type="submit" name="submitButton" class="login">Login</button>
+        <a href="./index.php" class="login">Back</a>
+      </form>
+    </div>
   </div>
   <div class="right">
     <div class="centered">
-      <div class="flex-container centered">
-        <div class="container <?php echo strpos($address, 'Hulong duhat') !== false ? 'green-border' : ''; ?>">
-          <div class="video-container">
-            <video id="video" width="640" height="480" autoplay></video>
-            <canvas id="overlay" class="overlay"></canvas>
-            <div id="confidence"></div>
-            <div><strong>Name:</strong> <span id="userName"></span></div>
-            <div><strong>Address:</strong> <span id="userAddress"></span></div>
-            <div><strong>Mobile Number:</strong> <span id="userMobile"></span></div>
-            <div><strong>Birthday:</strong> <span id="userBirthday"></span></div>
-
-            <div class="image-container" id="imageContainer">
-              <div id="relatedImageContainer"><img id="relatedImage" class="relatedImageContainer"
-                  src="./face/labels/Unknown/0.jpg"></div>
-              <div id="confidence"></div>
-              <div class="button-container">
-                <form id="createLogsForm" method="post" action="face/createLog.php">
-                  <button id="submitButton" type="submit" name="submitButton">Select</button>
-                  <br>
-                  <!-- <small>Wait for the result before you click the select button</small>
-                  <input type="hidden" id="confidenceScoreInput" name="confidence_score">
-                  <input type="hidden" id="userNameInput" name="user_name"> -->
-                </form>
-              </div>
-            </div>
-          </div>
-          <a href="./index.php" class="login">Back</a>
-        </div>
+      <h1>Registered Face:</h1>
+      <div class="image-container">
+        <img id="relatedImage" class="relatedImageContainer" src="./face/labels/Unknown/0.jpg">
       </div>
+      <div id="confidence"></div>
+
+
+      <br>
+      <div><strong>Name:</strong> <span id="userName"></span></div>
+      <div><strong>Username:</strong> <span id="userAddress"></span></div>
+      <div><strong>Password</strong> <span id="userMobile"></span></div>
+      <!-- <div><strong>Birthday:</strong> <span id="userBirthday"></span></div> -->
+
     </div>
 </body>
 
@@ -102,7 +100,7 @@ try {
       confidenceScoreInput.value = confidenceScore;
       userNameInput.value = userName;
 
-      document.getElementById("createLogsForm").submit();
+      document.getElementById("facelogin").submit();
     });
   });
 
@@ -239,8 +237,8 @@ try {
       const user = labelsArray.find(item => item.name === label);
       if (user) {
         userNameSpan.textContent = user.name;
-        userAddressSpan.textContent = user.address;
-        userMobileSpan.textContent = user.cellphone;
+        userAddressSpan.textContent = user.username;
+        userMobileSpan.textContent = user.password;
         const formattedBirthday = new Date(user.birthday).toLocaleDateString('en-US', {
           year: 'numeric',
           month: 'long',
