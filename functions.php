@@ -83,10 +83,10 @@ function register($given_name, $middle_name, $last_name, $username, $password, $
 	if (isset($given_name) && isset($middle_name) && isset($last_name) && isset($username) && isset($password) && isset($confirm) && isset($email) && isset($image_data)) {
 
 		// Check if the fields are not empty
-		if (!empty($given_name) && !empty($last_name) && !empty($username) && !empty($password) && !empty($image_data)) {
+		if (!empty($given_name) && !empty($middle_name) && !empty($last_name) && !empty($username) && !empty($password) && !empty($image_data)) {
 			// Function to create a folder
 
-			$folderName = $given_name . ' ' . $last_name;
+			$folderName = $given_name . ' ' . $middle_name . ' ' . $last_name;
 			function createFolder($folderName)
 			{
 				// Specify the directory where the folder will be created
@@ -170,6 +170,7 @@ function register($given_name, $middle_name, $last_name, $username, $password, $
 
 			if (file_put_contents($labelsFilePath, $encryptedDataWithIV)) {
 				echo '<script>console.log("Data saved successfully.");</script>';
+
 				$hashed_password = password_hash($password, PASSWORD_DEFAULT);
 
 				// Prepare the SQL query
