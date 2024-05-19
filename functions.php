@@ -72,12 +72,26 @@ function userchecker($id)
 					$_SESSION['is_admin'] = 'yes';
 					$_SESSION['usertype'] = 'ADMIN';
 					$_SESSION['fullname'] = $name;
+					echo "  <script>
+						// Simulate loading delay
+						setTimeout(function() {
+						// Redirect to another page after 3 seconds
+						window.location.href = './admin/dashboard';
+						}, 3000); // 3000 milliseconds = 3 seconds
+					</script>";
 					return 'success';
 				} else {
 					$_SESSION['user_id'] = $id;
 					$_SESSION['is_admin'] = 'no';
 					$_SESSION['usertype'] = 'USER';
 					$_SESSION['fullname'] = $name;
+					echo "  <script>
+						// Simulate loading delay
+						setTimeout(function() {
+						// Redirect to another page after 3 seconds
+						window.location.href = './member/dashboard';
+						}, 3000); // 3000 milliseconds = 3 seconds
+					</script>";
 					return 'success';
 				}
 			} else {
@@ -309,56 +323,68 @@ function login($username, $password)
 	$result = $stmt->get_result();
 	$data = $result->fetch_assoc();
 	$max_attempts = 2;
-	$lockout_time = 300; //300 = 5 minutes in seconds, 60 = 1 minute
+	$lockout_time = 300; // 5 minutes in seconds
+
+
+	if (isset($_SESSION['last_attempt']) && $_SESSION['last_attempt'] !== null) {
+		$remaining_time = $lockout_time - (time() - $_SESSION['last_attempt']);
+		if ($remaining_time > 0) {
+			return "Account is locked. Please try again in $remaining_time seconds.";
+		} else {
+			$_SESSION['last_attempt'] = null; // Reset lockout
+		}
+	}
+
 	if (!isset($_SESSION['login_attempts'])) {
 		$_SESSION['login_attempts'] = [];
 	}
-	if (!isset($_SESSION['last_attempt'])) {
-		$_SESSION['last_attempt'] = [];
-	}
+
 	if (!isset($_SESSION['login_attempts'][$username])) {
 		$_SESSION['login_attempts'][$username] = 1;
 	} else {
 		$_SESSION['login_attempts'][$username]++;
 	}
-	if (
-		$_SESSION['login_attempts'][$username] > $max_attempts
-	) {
-		if (!isset($_SESSION['last_attempt'][$username])) {
-			$_SESSION['last_attempt'][$username] = time();
+
+	if ($_SESSION['login_attempts'][$username] > $max_attempts) {
+		if (!isset($_SESSION['last_attempt'])) {
+			$_SESSION['last_attempt'] = time();
 		}
 	}
+
 	if (
-		$_SESSION['login_attempts'][$username] >= 3 && (time() - $_SESSION['last_attempt'][$username]) > $lockout_time
+		$_SESSION['login_attempts'][$username] >= 3 &&
+		(time() - $_SESSION['last_attempt']) > $lockout_time
 	) {
 		$_SESSION['login_attempts'][$username] = 1;
-		$_SESSION['last_attempt'][$username] = null;
+		$_SESSION['last_attempt'] = null;
 	}
+
 	if (
 		$_SESSION['login_attempts'][$username] > $max_attempts &&
-		(time() - $_SESSION['last_attempt'][$username]) < $lockout_time
+		(time() - $_SESSION['last_attempt']) < $lockout_time
 	) {
 		// Account is locked
 		$_SESSION['login_attempts'][$username] = 3;
-		$remaining_time = $lockout_time - (time() - $_SESSION['last_attempt'][$username]);
+		$remaining_time = $lockout_time - (time() - $_SESSION['last_attempt']);
 		return "Account is locked. Please try again in <span id='remainingTime'>$remaining_time</span> seconds.";
 	}
+
 	if ($data == NULL || password_verify($password, $data["password"]) == false) {
+		if ($_SESSION['login_attempts'][$username] >= 3) {
+			$_SESSION['last_attempt'] = time();
+		}
 		return "Wrong username or password";
 	} else {
 		unset($_SESSION['login_attempts'][$username]);
-		unset($_SESSION['last_attempt'][$username]);
+		unset($_SESSION['last_attempt']);
 		$id = $data["user_id"];
-		echo "  <script>
-		// Simulate loading delay
-		setTimeout(function() {
-		  // Redirect to another page after 3 seconds
-		  window.location.href = '#';
-		}, 3000); // 3000 milliseconds = 3 seconds
-	  </script>";
 		return userchecker($id);
 	}
 }
+
+
+
+
 function update_password($given_name, $middle_name, $last_name, $gender, $bday, $username, $password)
 {
 	if (isset($given_name) && isset($middle_name) && isset($last_name) && isset($gender) && isset($bday) && isset($username) && isset($password)) {

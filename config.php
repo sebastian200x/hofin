@@ -13,10 +13,12 @@ define('PASSWORD', '');
 // Fill in your database.
 define('DATABASE', 'dbhofin');
 
+define('ROOT_DIR', __DIR__);
 
 // error_reporting(0);
 
 // PHPMailer settings. ---------------------------------
+
 // define('MAIL_HOST', 'mail.domain.com');
 // define('MAIL_USERNAME', 'info@domain.com');
 // define('MAIL_PASSWORD', 'email-account-password');

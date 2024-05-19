@@ -1,3 +1,4 @@
+
 <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 <link rel="stylesheet" href="<?php $_SERVER['DOCUMENT_ROOT']; ?>/hofin/styles/css/navbar.css">
@@ -27,17 +28,19 @@ require ($_SERVER['DOCUMENT_ROOT'] . '/hofin/functions.php');
     <ul>
       <li class="center user">
         <?php
-        $id = $_SESSION['user_id'];
+        $id = (isset($_SESSION['user_id']));
         $pic = getpic($id);
         // echo $pic;
-        if ($pic != false) {
+        if ((isset($pic)) && $pic != false) {
           ?>
           <img draggable="false" src="/hofin/<?php echo $pic; ?>/0.jpg" alt="User" />
           <?php
-        } else {
+        } else if ((!isset($pic))) {
           ?>
-          <img draggable="false" src="/hofin/face/noprofile.jpg" alt="User" />
+            <img draggable="false" src="/hofin/face/noprofile.jpg" alt="User" />
           <?php
+        } else {
+
         }
         if (isset($_SESSION['fullname'])) {
           echo '<p>' . $_SESSION['fullname'] . '<p>';

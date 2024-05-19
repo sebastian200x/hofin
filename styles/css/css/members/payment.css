@@ -1,0 +1,36 @@
+.table {
+    margin-top: 100px;
+    text-align: center;
+}
+
+table {
+    width: 90%;
+    border-collapse: collapse;
+    text-align: center;
+    margin: 40px auto;
+}
+
+.table td,
+.table th {
+    border: 2px solid black;
+    padding: 8px;
+}
+
+table thead {
+    font-weight: bold;
+}
+
+.pay {
+    border-radius: 5px;
+    cursor: pointer;
+    border: 1px solid black;
+    background-color: rgb(255, 220, 64);
+    padding: 10px 20px;
+    font-weight: bold;
+}
+
+@media (max-width: 660px) {
+    table {
+        width: 99%;
+    }
+    }

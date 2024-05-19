@@ -1,0 +1,67 @@
+.payment-form {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 50%;
+    border: 1px solid black;
+    background: #6fb9b9;
+    border-radius: 5px;
+    padding: 20px;
+}
+
+.pay-detail {
+    width: 50%;
+    padding: 10px 20px;
+    border: solid 1px black;
+    border-radius: 10px;
+    margin: 20px auto 0 auto;
+}
+
+.pay-detail h3 {
+    padding: 5px 10px;
+}
+
+.pay {
+    display: block;
+    margin: 20px auto;
+    padding: 10px 30px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.code-confirm {
+    display: block;
+    margin: 5px auto;
+    padding: 10px 30px;
+    text-align: center;
+}
+
+.code-instruction {
+    text-align: center;
+    padding: 20px 0 0 0;
+}
+
+.code {
+    text-align: center;
+}
+
+.instruct {
+    text-align: center;
+    padding-top: 30px;
+}
+
+
+.instruction {
+    text-align: center;
+    padding: 10px 0;
+}
+
+
+@media screen and (max-width: 650px) {
+
+    .payment-form {
+        width: 90%;
+    }
+
+}

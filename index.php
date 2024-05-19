@@ -19,10 +19,10 @@
         <div class="centered">
 
             <?php
-            // echo "<pre>";
-            // print_r($_SESSION);
-            // echo time();
-            // echo "</pre>";
+            echo "<pre>";
+            print_r($_SESSION);
+            echo time();
+            echo "</pre>";
             
             if (isset($_POST['login'])) {
 
