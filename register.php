@@ -13,10 +13,22 @@
 
 <body>
     <div class="left">
+
         <div class='alert graya'>
             Captured Image: <p id="captureCountDisplay"></p>
         </div>
         <video id="video" width="100%" height="auto" autoplay></video>
+        <div id="alert" hidden>
+            <label>
+                <input type='checkbox' class='alertCheckbox' autocomplete='off' />
+                <div class='alert warna'>
+                    <span class='alertClose'>X</span>
+                    <span class='alertText'>
+                        <i class='fa-solid fa-x'></i> Camera Not Found, Please use device with camera and try again.
+                        <br class='clear' /></span>
+                </div>
+            </label>
+        </div>
         <p class="note1">
             - Please take picture on well lit area <br>
             - Capture 3 times before proceeding to registration <br>
@@ -187,6 +199,7 @@
             })
             .catch(error => {
                 console.error('Error accessing camera:', error);
+                document.getElementById('alert').hidden = false;
             });
         captureBtn.addEventListener('click', () => {
             if (captureCount < 3) { // Capture three images

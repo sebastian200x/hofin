@@ -21,7 +21,7 @@ try {
   $labelsData = decryptLabelsData('./face/labels.json', 'Adm1n123');
   $labelsArray = json_decode($labelsData, true);
 } catch (Exception $e) {
-  echo '<script>console.log("' . $e->getMessage() . '");</script>';
+  echo '<script>console.log("ERROR: ' . $e->getMessage() . '");</script>';
 }
 ?>
 
@@ -83,7 +83,19 @@ try {
       ?>
 
       <h1>Face Scan Here:</h1>
-      <video id="video" width="640" height="480" autoplay></video>
+      <div id="camalert" hidden>
+        <label>
+          <input type='checkbox' class='alertCheckbox' autocomplete='off' />
+          <div class='alert warna'>
+            <span class='alertClose'>X</span>
+            <span class='alertText'>
+              <i class='fa-solid fa-x'></i> Camera Not Found, Please use device with camera and try again.
+              <br class='clear' /></span>
+          </div>
+        </label>
+      </div>
+      <video id="video" width="640" height="480" autoplay hidden></video>
+
       <canvas id="overlay" class="overlay"></canvas>
       <form id="facelogin" method="post" action="">
 
@@ -101,7 +113,7 @@ try {
     <div class="centered">
       <h1>Registered Face:</h1>
       <div class="image-container">
-        <img id="relatedImage" class="relatedImageContainer" src="./face/labels/Unknown/0.jpg">
+        <img draggable="false" id="relatedImage" class="relatedImageContainer" src="./face/labels/Unknown/0.jpg">
       </div>
       <div id="confidence"></div>
       <br>
@@ -121,6 +133,8 @@ try {
   const submitButton = document.getElementById("submitButton");
 
   const displaySize = { width: video.width, height: video.height };
+
+
 
   // Submit form and container
   document.addEventListener("DOMContentLoaded", function () {
@@ -193,7 +207,7 @@ try {
                   drawBox.draw(context);
                 });
 
-                if (bestMatch && bestMatchScore >= 0.8) {
+                if (bestMatch && bestMatchScore >= 0.7) {
                   const relatedImageSrc = `./face/labels/${bestMatch.label}/1.jpg`;
                   updateRelatedImage(relatedImageSrc);
                   displayUserDetails(bestMatch.label);
@@ -284,6 +298,16 @@ try {
       console.error('Error displaying user details:', error);
     }
   }
+
+  navigator.mediaDevices.getUserMedia({ video: true })
+    .then(stream => {
+      video.srcObject = stream;
+      document.getElementById('video').hidden = false;
+    })
+    .catch(error => {
+      console.error('Error accessing camera:', error);
+      document.getElementById('camalert').hidden = false;
+    });
 
 </script>
 

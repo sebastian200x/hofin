@@ -46,7 +46,7 @@ require ($_SERVER['DOCUMENT_ROOT'] . '/hofin/functions.php');
       </li>
 
       <?php
-      if ($_SESSION['is_admin'] == 'yes') {
+      if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 'yes') {
         ?>
         <li class="divider"></li>
         <li class="title">Administration</li>
@@ -72,7 +72,7 @@ require ($_SERVER['DOCUMENT_ROOT'] . '/hofin/functions.php');
             draggable="false"><i class="fa-solid fa-face-smile"></i> Face Register</a></li>
 
       <?php }
-      if ($_SESSION['is_admin'] == 'no') {
+      if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 'no') {
         ?>
         <li class="divider"></li>
         <li class="title">User Management</li>
@@ -114,13 +114,15 @@ require ($_SERVER['DOCUMENT_ROOT'] . '/hofin/functions.php');
   </a>
   <div class="username">
     <h3>
-      <?php if ($_SESSION['is_admin'] == 'yes') { ?>
+      <?php if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 'yes') { ?>
         <i class="fa-solid fa-user-tie"></i>
       <?php }
-      if ($_SESSION['is_admin'] == 'no') { ?>
+      if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 'no') { ?>
         <i class="fa-solid fa-user"></i>
       <?php } ?>
-      <?php echo $_SESSION['usertype']; ?>
+      <?php if (isset($_SESSION['usertype'])) {
+        echo $_SESSION['usertype'];
+      } ?>
     </h3>
 
   </div>
