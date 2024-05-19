@@ -26,8 +26,20 @@ require ($_SERVER['DOCUMENT_ROOT'] . '/hofin/functions.php');
   <div class="sidenav" id="sidenav">
     <ul>
       <li class="center user">
-        <img draggable="false" src="<?php $_SERVER['DOCUMENT_ROOT']; ?>/hofin/face/noprofile.jpg" alt="User" />
-        <?php if (isset($_SESSION['fullname'])) {
+        <?php
+        $id = $_SESSION['user_id'];
+        $pic = getpic($id);
+        // echo $pic;
+        if ($pic != false) {
+          ?>
+          <img draggable="false" src="/hofin/<?php echo $pic; ?>/0.jpg" alt="User" />
+          <?php
+        } else {
+          ?>
+          <img draggable="false" src="/hofin/face/noprofile.jpg" alt="User" />
+          <?php
+        }
+        if (isset($_SESSION['fullname'])) {
           echo '<p>' . $_SESSION['fullname'] . '<p>';
         }
         ?>
@@ -35,8 +47,6 @@ require ($_SERVER['DOCUMENT_ROOT'] . '/hofin/functions.php');
 
       <?php
       if ($_SESSION['is_admin'] == 'yes') {
-
-
         ?>
         <li class="divider"></li>
         <li class="title">Administration</li>
@@ -89,7 +99,8 @@ require ($_SERVER['DOCUMENT_ROOT'] . '/hofin/functions.php');
           <li><a href="/account" draggable="false"><i class="fa-solid fa-user-tie"></i> Profile</a></li>
         </div>
         <div class="flex-half">
-          <li><a href="<?php $_SERVER['DOCUMENT_ROOT'] ?>/hofin/logout.php" draggable="false"><i class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
+          <li><a href="<?php $_SERVER['DOCUMENT_ROOT'] ?>/hofin/logout.php" draggable="false"><i
+                class="fa-solid fa-right-from-bracket"></i> Logout</a></li>
         </div>
       </div>
     </ul>
@@ -102,13 +113,14 @@ require ($_SERVER['DOCUMENT_ROOT'] . '/hofin/functions.php');
     HOA Finance
   </a>
   <div class="username">
-    <!-- <h3>
-      {% if session['is_admin'] == "yes" %}
-      <i class="fa-solid fa-user-tie"></i>
-      {% elif session['is_admin'] == "no" %}
-      <i class="fa-solid fa-user"></i>
-      {% endif %}
-      {{session['user_type']}} -->
+    <h3>
+      <?php if ($_SESSION['is_admin'] == 'yes') { ?>
+        <i class="fa-solid fa-user-tie"></i>
+      <?php }
+      if ($_SESSION['is_admin'] == 'no') { ?>
+        <i class="fa-solid fa-user"></i>
+      <?php } ?>
+      <?php echo $_SESSION['usertype']; ?>
     </h3>
 
   </div>
