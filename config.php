@@ -13,7 +13,6 @@ define('PASSWORD', '');
 // Fill in your database.
 define('DATABASE', 'dbhofin');
 
-define('ROOT', dirname(__DIR__));
 
 // error_reporting(0);
 

@@ -5,8 +5,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="./styles/css/index.css">
-    <?php include 'navbar.php'; ?>
+
+    <link rel="stylesheet" href="<?php $_SERVER['DOCUMENT_ROOT'] ?>/hofin/styles/css/index.css">
+    <?php require ($_SERVER['DOCUMENT_ROOT'] . '/hofin/navbar.php'); ?>
 </head>
 
 <body>
@@ -16,13 +17,13 @@
     </div>
     <div class="right">
         <div class="centered">
+
             <?php
             // echo "<pre>";
             // print_r($_SESSION);
             // echo time();
             // echo "</pre>";
-            ?>
-            <?php
+            
             if (isset($_POST['login'])) {
 
                 $username = $_POST['username'];

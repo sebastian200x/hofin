@@ -24,38 +24,34 @@ function connect()
 
 function userchecker($id)
 {
-	// Establish a database connection.
-	$mysqli = connect();
+	$mysqli = connect() or die("Connection failed: " . $mysqli->connect_error);
 
-	// If there's an error in database connection, the program will stop function
-	if (!$mysqli) {
-		return false;
-	}
-
-	// Prepare the SQL statement
-	$stmt = $mysqli->prepare("SELECT is_admin, is_deleted, is_verified FROM tbl_useracc WHERE user_id = ?");
-	if (!$stmt) {
-		return false;
-	}
-
-	// Bind the parameter to the SQL statement
-	$stmt->bind_param('i', $id);
-
-	// Execute the statement
-	if (!$stmt->execute()) {
-		return false;
-	}
+	// Prepare and execute the SQL statement
+	$stmt1 = $mysqli->prepare("SELECT is_admin, is_deleted, is_verified FROM tbl_useracc WHERE user_id = ?");
+	$stmt1->bind_param('i', $id);
+	$stmt1->execute();
 
 	// Get the result
-	$result1 = $stmt->get_result();
+	$result1 = $stmt1->get_result();
+
+	// Check if there are results and fetch the data
+	if ($result1 && $result1->num_rows > 0) {
+		$row1 = $result1->fetch_array();
 
 
-	if ($result1 && mysqli_num_rows($result1) > 0) {
-		$row1 = mysqli_fetch_array($result1);
+		// Prepare and execute the SQL statement
+		$stmt2 = $mysqli->prepare("SELECT given_name, last_name	FROM tbl_userinfo WHERE user_id = ?");
+		$stmt2->bind_param('i', $id);
+		$stmt2->execute();
+
+		// Get the result
+		$result2 = $stmt2->get_result();
+		$row2 = $result2->fetch_array();
 
 		$is_admin = $row1['is_admin'];
 		$is_deleted = $row1['is_deleted'];
 		$is_verified = $row1['is_verified'];
+		$name = $row2['given_name'] . ' ' . $row2['last_name'];
 
 		if (isset($is_deleted) && $is_deleted == "no") {
 
@@ -65,13 +61,13 @@ function userchecker($id)
 					$_SESSION['user_id'] = $id;
 					$_SESSION['is_admin'] = 'yes';
 					$_SESSION['usertype'] = 'ADMIN';
-					$_SESSION['fullname'] = '';
+					$_SESSION['fullname'] = $name;
 					return 'success';
 				} else {
 					$_SESSION['user_id'] = $id;
-					$_SESSION['is_admin'] = 'yes';
+					$_SESSION['is_admin'] = 'no';
 					$_SESSION['usertype'] = 'ADMIN';
-					$_SESSION['fullname'] = '';
+					$_SESSION['fullname'] = $name;
 					return 'success';
 				}
 			} else {
@@ -177,6 +173,8 @@ function register($given_name, $middle_name, $last_name, $gender, $bday, $userna
 			// Save the images
 			foreach ($image_data as $index => $imageData) {
 				$imagePath = "face/labels/$folderName/" . ($index) . ".jpg";
+				$folderpath = "face/labels/$folderName/";
+
 				if (!file_put_contents($imagePath, base64_decode(preg_replace('#^data:image/\w+;base64,#i', '', $imageData)))) {
 					echo '<div class="alert alert-danger" role="alert">Failed to save image $index.</div>';
 					exit;
@@ -259,15 +257,31 @@ function register($given_name, $middle_name, $last_name, $gender, $bday, $userna
 					$stmt2->bind_param("isssss", $user_id, $given_name, $middle_name, $last_name, $gender, $bday);
 
 					if ($stmt2->execute()) {
-						// Close the statement and connection
-						$stmt1->close();
-						$stmt2->close();
-						echo "  <script>
-							setTimeout(function() {
-							window.location.href = './index.php';
-							}, 3000); // 3000 milliseconds = 3 seconds
-						</script>";
-						return "success";
+
+						$stmt3 = $mysqli->prepare("INSERT INTO tbl_face (user_id, face_pic) VALUES (?, ?)");
+						$stmt3->bind_param("is", $user_id, $folderpath);
+						if ($stmt3->execute()) {
+							// Close the statement and connection
+							$stmt1->close();
+							$stmt2->close();
+							$stmt3->close();
+							echo "  <script>
+								setTimeout(function() {
+								window.location.href = './index.php';
+								}, 3000); // 3000 milliseconds = 3 seconds
+							</script>";
+							return "success";
+						} else {	// If there's an error, log it
+							$error = $stmt1->error;
+							$error_date = date("F j, Y, g:i a");
+							$message = "{$error} | {$error_date} \r\n";
+							file_put_contents("db-log.txt", $message, FILE_APPEND);
+
+							// Close the statement and connection
+							$stmt1->close();
+							$mysqli->close();
+							return "Registration failed.";
+						}
 					} else {	// If there's an error, log it
 						$error = $stmt1->error;
 						$error_date = date("F j, Y, g:i a");

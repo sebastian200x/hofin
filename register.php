@@ -5,8 +5,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Registration</title>
-    <link rel="stylesheet" href="./styles/css/register.css">
-    <?php include 'navbar.php'; ?>
+
+    <link rel="stylesheet" href="<?php $_SERVER['DOCUMENT_ROOT'] ?>/hofin/styles/css/register.css">
+    <?php require ($_SERVER['DOCUMENT_ROOT'] . '/hofin/navbar.php'); ?>
+
 </head>
 
 <body>
@@ -196,7 +198,6 @@
                 const imageData = canvas.toDataURL('image/jpeg');
                 capturedImages.push(imageData);
                 document.getElementById('captureCountDisplay').textContent = (captureCount + 1); // Update the capture count in the HTML
-                document.getElementById('captureCountDisplay').style.fontWeight = "bold";
                 if (captureCount >= 2) { // Disable button after capturing three images
                     captureBtn.disabled = true;
                     submitBtn.disabled = false; // Enable the submit button after capturing three images

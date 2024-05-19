@@ -35,10 +35,9 @@ try {
   <title>Face Login</title>
 
   <script src="face-api.min.js"></script>
-  <link rel="stylesheet" href="./styles/css/face_login.css">
-  <?php
-  include (ROOT . '/navbar.php');
-  ?>
+
+  <link rel="stylesheet" href="<?php $_SERVER['DOCUMENT_ROOT'] ?>/hofin/styles/css/face_login.css">
+  <?php require ($_SERVER['DOCUMENT_ROOT'] . '/hofin/navbar.php'); ?>
 
 </head>
 
