@@ -207,7 +207,7 @@ try {
                   drawBox.draw(context);
                 });
 
-                if (bestMatch && bestMatchScore >= 0.7) {
+                if (bestMatch && bestMatchScore >= 0.6) {
                   const relatedImageSrc = `./face/labels/${bestMatch.label}/1.jpg`;
                   updateRelatedImage(relatedImageSrc);
                   displayUserDetails(bestMatch.label);
