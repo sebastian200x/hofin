@@ -1,5 +1,5 @@
 <?php
-require (__DIR__ . '/config.php');
+require ($_SERVER['DOCUMENT_ROOT'] . '/hofin/config.php');
 
 function connect()
 {
@@ -21,6 +21,69 @@ function connect()
 		return $mysqli;
 	}
 }
+
+function userchecker($id)
+{
+	// Establish a database connection.
+	$mysqli = connect();
+
+	// If there's an error in database connection, the program will stop function
+	if (!$mysqli) {
+		return false;
+	}
+
+	// Prepare the SQL statement
+	$stmt = $mysqli->prepare("SELECT is_admin, is_deleted, is_verified FROM tbl_useracc WHERE user_id = ?");
+	if (!$stmt) {
+		return false;
+	}
+
+	// Bind the parameter to the SQL statement
+	$stmt->bind_param('i', $id);
+
+	// Execute the statement
+	if (!$stmt->execute()) {
+		return false;
+	}
+
+	// Get the result
+	$result1 = $stmt->get_result();
+
+
+	if ($result1 && mysqli_num_rows($result1) > 0) {
+		$row1 = mysqli_fetch_array($result1);
+
+		$is_admin = $row1['is_admin'];
+		$is_deleted = $row1['is_deleted'];
+		$is_verified = $row1['is_verified'];
+
+		if (isset($is_deleted) && $is_deleted == "no") {
+
+			if (isset($is_verified) && $is_verified == "yes") {
+
+				if (isset($is_admin) && $is_admin == "yes") {
+					$_SESSION['user_id'] = $id;
+					$_SESSION['is_admin'] = 'yes';
+					$_SESSION['usertype'] = 'ADMIN';
+					$_SESSION['fullname'] = '';
+					return 'success';
+				} else {
+					$_SESSION['user_id'] = $id;
+					$_SESSION['is_admin'] = 'yes';
+					$_SESSION['usertype'] = 'ADMIN';
+					$_SESSION['fullname'] = '';
+					return 'success';
+				}
+			} else {
+				return 'Account is not yet verified, please wait for the admin to verify your account.';
+			}
+		} else {
+			return 'Account was deleted, if you think this is a mistake please contact an admin.';
+		}
+	}
+
+}
+
 
 function create_user()
 {
@@ -53,7 +116,7 @@ function create_user()
 }
 
 
-function register($given_name, $middle_name, $last_name, $username, $password, $confirm, $email, $image_data)
+function register($given_name, $middle_name, $last_name, $gender, $bday, $username, $password, $confirm, $email, $image_data)
 {
 
 	// Establish a database connection.
@@ -80,10 +143,10 @@ function register($given_name, $middle_name, $last_name, $username, $password, $
 	}
 
 
-	if (isset($given_name) && isset($middle_name) && isset($last_name) && isset($username) && isset($password) && isset($confirm) && isset($email) && isset($image_data)) {
+	if (isset($given_name) && isset($middle_name) && isset($last_name) && isset($gender) && isset($bday) && isset($username) && isset($password) && isset($confirm) && isset($email) && isset($image_data)) {
 
 		// Check if the fields are not empty
-		if (!empty($given_name) && !empty($middle_name) && !empty($last_name) && !empty($username) && !empty($password) && !empty($image_data)) {
+		if (!empty($given_name) && !empty($middle_name) && !empty($last_name) && !empty($gender) && !empty($bday) && !empty($username) && !empty($password) && !empty($image_data)) {
 			// Function to create a folder
 
 			$folderName = $given_name . ' ' . $middle_name . ' ' . $last_name;
@@ -123,6 +186,8 @@ function register($given_name, $middle_name, $last_name, $username, $password, $
 			// Prepare data to save to labels.json
 			$dataToSave = array(
 				'name' => $given_name . ' ' . $middle_name . ' ' . $last_name,
+				'gender' => $gender,
+				'bday' => $bday,
 				'username' => $username,
 				'password' => $password,
 			);
@@ -149,7 +214,11 @@ function register($given_name, $middle_name, $last_name, $username, $password, $
 			// Check if the name already exists
 			$nameExists = false;
 			foreach ($existingData as $data) {
-				if ($data['name'] == $dataToSave['name']) {
+				if (
+					$data['name'] == $dataToSave['name'] &&
+					$data['gender'] == $dataToSave['gender'] &&
+					$data['bday'] == $dataToSave['bday']
+				) {
 					$nameExists = true;
 					break;
 				}
@@ -179,25 +248,50 @@ function register($given_name, $middle_name, $last_name, $username, $password, $
 				$is_deleted = "no";
 				$is_verified = "no";
 
-				$stmt = $mysqli->prepare("INSERT INTO tbl_useracc (username, password, email, is_admin, is_deleted, is_verified) VALUES (?, ?, ?, ?, ?, ?)");
-				$stmt->bind_param("ssssss", $username, $hashed_password, $email, $is_admin, $is_deleted, $is_verified);
+				$stmt1 = $mysqli->prepare("INSERT INTO tbl_useracc (username, password, email, is_admin, is_deleted, is_verified) VALUES (?, ?, ?, ?, ?, ?)");
+				$stmt1->bind_param("ssssss", $username, $hashed_password, $email, $is_admin, $is_deleted, $is_verified);
 
 				// Execute the query
-				if ($stmt->execute()) {
-					// Close the statement and connection
-					$stmt->close();
-					$mysqli->close();
-					return "success";
+				if ($stmt1->execute()) {
+					$user_id = $mysqli->insert_id;
+
+					$stmt2 = $mysqli->prepare("INSERT INTO tbl_userinfo (user_id, given_name, middle_name, last_name, gender, bday) VALUES (?, ?, ?, ?, ?, ?)");
+					$stmt2->bind_param("isssss", $user_id, $given_name, $middle_name, $last_name, $gender, $bday);
+
+					if ($stmt2->execute()) {
+						// Close the statement and connection
+						$stmt1->close();
+						$stmt2->close();
+						echo "  <script>
+							setTimeout(function() {
+							window.location.href = './index.php';
+							}, 3000); // 3000 milliseconds = 3 seconds
+						</script>";
+						return "success";
+					} else {	// If there's an error, log it
+						$error = $stmt1->error;
+						$error_date = date("F j, Y, g:i a");
+						$message = "{$error} | {$error_date} \r\n";
+						file_put_contents("db-log.txt", $message, FILE_APPEND);
+
+						// Close the statement and connection
+						$stmt1->close();
+						$mysqli->close();
+						return "Registration failed.";
+					}
+
+
 				} else {
 					// If there's an error, log it
-					$error = $stmt->error;
+					$error = $stmt1->error;
 					$error_date = date("F j, Y, g:i a");
 					$message = "{$error} | {$error_date} \r\n";
 					file_put_contents("db-log.txt", $message, FILE_APPEND);
 
 					// Close the statement and connection
-					$stmt->close();
+					$stmt1->close();
 					$mysqli->close();
+
 					return "Registration failed.";
 				}
 			} else {
@@ -238,6 +332,7 @@ function login($username, $password)
 	$password = filter_var($password, FILTER_SANITIZE_STRING);
 
 	$sql = "SELECT username, password, user_id FROM tbl_useracc WHERE username = ?";
+
 	$stmt = $mysqli->prepare($sql);
 	if (!$stmt) {
 		return "Database error: " . $mysqli->error;
@@ -290,16 +385,13 @@ function login($username, $password)
 		$remaining_time = $lockout_time - (time() - $_SESSION['last_attempt'][$username]);
 		return "Account is locked. Please try again in <span id='remainingTime'>$remaining_time</span> seconds.";
 	}
-
 	if ($data == NULL || password_verify($password, $data["password"]) == false) {
-
 		return "Wrong username or password";
 	} else {
 		unset($_SESSION['login_attempts'][$username]);
 		unset($_SESSION['last_attempt'][$username]);
 
 		$id = $data["user_id"];
-		$_SESSION["id"] = $id;
 
 		echo "  <script>
 		// Simulate loading delay
@@ -308,64 +400,75 @@ function login($username, $password)
 		  window.location.href = '#';
 		}, 3000); // 3000 milliseconds = 3 seconds
 	  </script>";
-		return 'success';
+		return userchecker($id);
 	}
 }
 
 
-function update_password($given_name, $middle_name, $last_name, $username, $password)
+function update_password($given_name, $middle_name, $last_name, $gender, $bday, $username, $password)
 {
+	if (isset($given_name) && isset($middle_name) && isset($last_name) && isset($gender) && isset($bday) && isset($username) && isset($password)) {
 
-	// Prepare data to save to labels.json
-	$dataToSave = array(
-		'name' => $given_name . ' ' . $middle_name . ' ' . $last_name,
-		'username' => $username,
-		'password' => $password,
-	);
+		// Prepare data to save to labels.json
+		$dataToSave = array(
+			'name' => $given_name . ' ' . $middle_name . ' ' . $last_name,
+			'username' => $username,
+			'password' => $password,
+			'gender' => $gender,
+			'bday' => $bday,
+		);
 
-	// Read existing data from labels.json
-	$labelsFilePath = './face/labels.json';
-	$existingData = array();
-	if (file_exists($labelsFilePath)) {
-		$encryptedDataWithIV = file_get_contents($labelsFilePath);
-		if ($encryptedDataWithIV !== false) {
-			$iv_hex = substr($encryptedDataWithIV, 0, 32); // Extract IV from the beginning
-			$encryptedData = substr($encryptedDataWithIV, 32); // Extract encrypted data without IV
-			$decryptedData = openssl_decrypt($encryptedData, 'aes-256-cbc', 'Adm1n123', 0, hex2bin($iv_hex));
-			if ($decryptedData !== false) {
-				$existingData = json_decode($decryptedData, true);
+		// Read existing data from labels.json
+		$labelsFilePath = './face/labels.json';
+		$existingData = array();
+		if (file_exists($labelsFilePath)) {
+			$encryptedDataWithIV = file_get_contents($labelsFilePath);
+			if ($encryptedDataWithIV !== false) {
+				$iv_hex = substr($encryptedDataWithIV, 0, 32); // Extract IV from the beginning
+				$encryptedData = substr($encryptedDataWithIV, 32); // Extract encrypted data without IV
+				$decryptedData = openssl_decrypt($encryptedData, 'aes-256-cbc', 'Adm1n123', 0, hex2bin($iv_hex));
+				if ($decryptedData !== false) {
+					$existingData = json_decode($decryptedData, true);
+				} else {
+					return 'Failed to decrypt data from labels.json.';
+				}
 			} else {
-				return 'Failed to decrypt data from labels.json.';
+				return 'Failed to read data from labels.json.';
 			}
+		}
+
+		// Check if the username already exists and update the data if it does
+		$userExists = false;
+		foreach ($existingData as &$data) {
+			if (
+				$data['name'] == $dataToSave['name'] &&
+				$data['gender'] == $dataToSave['gender'] &&
+				$data['bday'] == $dataToSave['bday']
+			) {
+				$data = $dataToSave; // Update existing user data
+				$userExists = true;
+				break;
+			}
+		}
+
+		// If the user does not exist, append new data
+		if (!$userExists) {
+			$existingData[] = $dataToSave;
+		}
+
+		// Encrypt and write updated data back to labels.json
+		$iv = openssl_random_pseudo_bytes(16); // Generate a random IV of 16 bytes (128 bits)
+		$iv_hex = bin2hex($iv); // Convert the binary IV to hexadecimal representation
+		$encryptedData = openssl_encrypt(json_encode($existingData), 'aes-256-cbc', 'Adm1n123', 0, $iv);
+		$encryptedDataWithIV = $iv_hex . $encryptedData; // Combine IV and encrypted data
+
+		if (file_put_contents($labelsFilePath, $encryptedDataWithIV)) {
+			return "success";
 		} else {
-			return 'Failed to read data from labels.json.';
+			return "Failed to save data to labels.json.";
 		}
-	}
-
-	// Check if the username already exists and update the data if it does
-	$userExists = false;
-	foreach ($existingData as &$data) {
-		if ($data['username'] == $dataToSave['username']) {
-			$data = $dataToSave; // Update existing user data
-			$userExists = true;
-			break;
-		}
-	}
-
-	// If the user does not exist, append new data
-	if (!$userExists) {
-		$existingData[] = $dataToSave;
-	}
-
-	// Encrypt and write updated data back to labels.json
-	$iv = openssl_random_pseudo_bytes(16); // Generate a random IV of 16 bytes (128 bits)
-	$iv_hex = bin2hex($iv); // Convert the binary IV to hexadecimal representation
-	$encryptedData = openssl_encrypt(json_encode($existingData), 'aes-256-cbc', 'Adm1n123', 0, $iv);
-	$encryptedDataWithIV = $iv_hex . $encryptedData; // Combine IV and encrypted data
-
-	if (file_put_contents($labelsFilePath, $encryptedDataWithIV)) {
-		return "success";
 	} else {
-		return "Failed to save data to labels.json.";
+		return 'All fields are required.';
+
 	}
 }

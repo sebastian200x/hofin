@@ -1,10 +1,11 @@
 <link href="https://fonts.googleapis.com/css?family=Nunito" rel="stylesheet">
-<link rel="stylesheet" href="./styles/css/navbar.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-<link rel="icon" type="image/png" sizes="32x32" href="./styles/images/favicon.png">
+<link rel="stylesheet" href="<?php $_SERVER['DOCUMENT_ROOT']; ?>/hofin/styles/css/navbar.css">
+<link rel="icon" type="image/png" sizes="32x32"
+  href="<?php $_SERVER['DOCUMENT_ROOT']; ?>/hofin/styles/images/favicon.png">
 
 <?php
-require (__DIR__ . '/functions.php');
+require ($_SERVER['DOCUMENT_ROOT'] . '/hofin/functions.php');
 ?>
 <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" /> -->
 
@@ -25,7 +26,7 @@ require (__DIR__ . '/functions.php');
   <div class="sidenav" id="sidenav">
     <ul>
       <li class="center user">
-        <img draggable="false" src="./face/labels/noprofile.jpg" alt="User" />
+        <img draggable="false" src="<?php $_SERVER['DOCUMENT_ROOT']; ?>/hofin/face/labels/noprofile.jpg" alt="User" />
         <?php if (isset($_SESSION['fullname'])) {
 
           echo $_SESSION['fullname'];
@@ -37,8 +38,9 @@ require (__DIR__ . '/functions.php');
       <!-- {% if session['is_admin'] == 'yes' %} -->
       <li class="divider"></li>
       <li class="title">Administration</li>
-      <li class="item {% if request.path == '/admin/dashboard' %}active{% endif %}"><a href="/admin/dashboard"
-          draggable="false"><i class="fa-solid fa-gauge"></i> Dashboard</a></li>
+      <li class="item {% if request.path == '' %}active{% endif %}"><a
+          href="<?php $_SERVER['DOCUMENT_ROOT'] ?>/hofin/admin/dashboard.php" draggable="false"><i
+            class="fa-solid fa-gauge"></i> Dashboard</a></li>
       <li class="item {% if request.path == '/admin/members_info' %}active{% endif %}"><a href="/admin/members_info"
           draggable="false"><i class="fa-solid fa-address-book"></i> Members Info</a></li>
       <li class="title">Payment Management</li>
@@ -92,7 +94,8 @@ require (__DIR__ . '/functions.php');
   <a href="#!" class="close sidenav-overlay" draggable="false"></a>
 
   <a class="navbar-brand" href="/hofin" draggable="false">
-    <img draggable="false" src="./styles/images/logo-s.png" alt="logo-s" class="navbar-img" />
+    <img draggable="false" src="<?php $_SERVER['DOCUMENT_ROOT']; ?>/hofin/styles/images/logo-s.png" alt="logo-s"
+      class="navbar-img" />
     HOA Finance
   </a>
   <div class="username">

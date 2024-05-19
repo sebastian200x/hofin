@@ -36,7 +36,10 @@ try {
 
   <script src="face-api.min.js"></script>
   <link rel="stylesheet" href="./styles/css/face_login.css">
-  <?php include 'navbar.php'; ?>
+  <?php
+  include (ROOT . '/navbar.php');
+  ?>
+
 </head>
 
 <body>
@@ -191,7 +194,7 @@ try {
                   drawBox.draw(context);
                 });
 
-                if (bestMatch && bestMatchScore >= 0.6) {
+                if (bestMatch && bestMatchScore >= 0.8) {
                   const relatedImageSrc = `./face/labels/${bestMatch.label}/1.jpg`;
                   updateRelatedImage(relatedImageSrc);
                   displayUserDetails(bestMatch.label);

@@ -72,14 +72,20 @@
             $given_name = $_POST['given_name'];
             $middle_name = $_POST['middle_name'];
             $last_name = $_POST['last_name'];
+
+            $gender = $_POST['gender'];
+            $bday = $_POST['bday'];
+
             $username = $_POST['username'];
             $password = $_POST['password'];
 
-            $response = update_password($given_name, $middle_name, $last_name, $username, $password);
+            $response = update_password($given_name, $middle_name, $last_name, $gender, $bday, $username, $password);
             if ($response == "success") {
                 $_POST['given_name'] = '';
                 $_POST['middle_name'] = '';
                 $_POST['last_name'] = '';
+                $_POST['gender'] = '';
+                $_POST['bday'] = '';
                 $_POST['username'] = '';
                 $_POST['password'] = '';
 
@@ -121,6 +127,20 @@
             <label for="last_name">Last Name:</label>
             <input type="text" id="last_name" name="last_name" required
                 value="<?php echo @$_POST['last_name']; ?>"><br><br>
+
+            <label for="gender">Gender
+                <select name="gender" name="gender" required>
+                    <option value="" selected hidden>Please select gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </label><br><br>
+
+            <label for="birthday">Birthday
+                <input type="date" name="bday" max="<?php echo date('Y-m-d'); ?>" id="bday"
+                    value="<?php echo @$_POST['bday']; ?>" required>
+            </label><br><br>
 
             <label for="username">Username:</label>
             <input type="text" id="username" name="username" required

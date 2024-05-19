@@ -32,6 +32,9 @@
                 $middle_name = $_POST['middle_name'];
                 $last_name = $_POST['last_name'];
 
+                $gender = $_POST['gender'];
+                $bday = $_POST['bday'];
+
                 $username = $_POST['username'];
                 $password = $_POST['password'];
 
@@ -39,12 +42,15 @@
                 $email = $_POST['email'];
 
                 $image_data = json_decode($_POST['image-data']);
-                $response = register($given_name, $middle_name, $last_name, $username, $password, $confirm, $email, $image_data);
+                $response = register($given_name, $middle_name, $last_name, $gender, $bday, $username, $password, $confirm, $email, $image_data);
                 if ($response == "success") {
 
                     $_POST['given_name'] = '';
                     $_POST['middle_name'] = '';
                     $_POST['last_name'] = '';
+
+                    $_POST['gender'] = '';
+                    $_POST['bday'] = '';
 
                     $_POST['username'] = '';
                     $_POST['password'] = '';
