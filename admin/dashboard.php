@@ -15,20 +15,19 @@
     <div class="container">
         <div class="card">
             <h2>Account to be verified</h2>
-            <p>Total users: {{to_verify}}</p>
-            {% if to_verify >= 1 %}
-            <a href="/admin/members_info" class="button red"><i class="fa-regular fa-bell"></i> Verify Account</a>
-            {% endif %}
+            <p>Total users: </p>
+            <a href="#" class="button red"><i class="fa-regular fa-bell"></i> Verify Account</a>
         </div>
         <div class="card">
             <h2>Total Approved Members</h2>
-            <p>Total users: {{count_user}}</p>
-            <a href="/admin/members_info" class="button"><i class="fa-regular fa-eye"></i> View Accounts</a>
+            <p>Total users:</p>
+            <a href="#" class="button"><i class="fa-regular fa-eye"></i> View Approved Accounts</a>
         </div>
 
         <div class="card">
             <h2>Deleted Accounts</h2>
-            <p>Total users: {{deleted}}</p>
+            <p>Total users: </p>
+            <a href="#" class="button"><i class="fa-regular fa-eye"></i> View Deleted Accounts</a>
         </div>
     </div>
 
@@ -36,24 +35,22 @@
     <div class="container">
         <div class="card">
             <h2>For Payment Approval</h2>
-            <p>Unverified Payment: {{transac_to_verify}}</p>
-            {% if transac_to_verify >= 1 %}
-            <a href="/admin/payment_verification" class="button red"><i class="fa-regular fa-bell"></i> Verify
+            <p>Unverified Payment:</p>
+            <a href="#" class="button red"><i class="fa-regular fa-bell"></i> Verify
                 Payment</a>
-            {% endif %}
         </div>
         <div class="card">
             <h2>Approved Payment</h2>
-            <p>Verified Payment: {{verified_transac}}</p>
-            <a href="/admin/payment_history" class="button"><i class="fa-regular fa-eye"></i> View Payments</a>
+            <p>Verified Payment:</p>
+            <a href="#" class="button"><i class="fa-regular fa-eye"></i> View Payments</a>
         </div>
         <div class="card">
             <h2>Members Not Yet paid</h2>
-            <p>Total members: {{unpaid_members}}</p>
+            <p>Total members:</p>
         </div>
         <div class="card">
             <h2>Total Money Collected</h2>
-            <p>Total money: <span id="formattedAmount">{{total_earnings}}</span></p>
+            <p>Total money: <span id="formattedAmount"></span></p>
         </div>
 
     </div>
@@ -63,7 +60,6 @@
     function addCommas(number) {
         return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     }
-
     var amountElement = document.getElementById("formattedAmount");
     amountElement.innerText = addCommas(amountElement.innerText);
 </script>

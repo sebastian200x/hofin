@@ -76,8 +76,8 @@ function userchecker($id)
 						// Simulate loading delay
 						setTimeout(function() {
 						// Redirect to another page after 3 seconds
-						window.location.href = './admin/dashboard';
-						}, 3000); // 3000 milliseconds = 3 seconds
+						window.location.href = './admin/dashboard.php';
+						}, 3000); // 2000 milliseconds = 3 seconds
 					</script>";
 					return 'success';
 				} else {
@@ -89,8 +89,8 @@ function userchecker($id)
 						// Simulate loading delay
 						setTimeout(function() {
 						// Redirect to another page after 3 seconds
-						window.location.href = './member/dashboard';
-						}, 3000); // 3000 milliseconds = 3 seconds
+						window.location.href = './member/dashboard.php';
+						}, 3000); // 2000 milliseconds = 3 seconds
 					</script>";
 					return 'success';
 				}

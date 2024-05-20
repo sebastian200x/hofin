@@ -115,6 +115,7 @@ try {
       <div class="image-container">
         <img draggable="false" id="relatedImage" class="relatedImageContainer" src="./face/labels/Unknown/0.jpg">
       </div>
+      <div id="Name:"></div>
       <div id="confidence"></div>
       <br>
     </div>
@@ -133,7 +134,6 @@ try {
   const submitButton = document.getElementById("submitButton");
 
   const displaySize = { width: video.width, height: video.height };
-
 
 
   // Submit form and container
@@ -207,7 +207,7 @@ try {
                   drawBox.draw(context);
                 });
 
-                if (bestMatch && bestMatchScore >= 0.6) {
+                if (bestMatch && bestMatchScore >= 0.57) {
                   const relatedImageSrc = `./face/labels/${bestMatch.label}/1.jpg`;
                   updateRelatedImage(relatedImageSrc);
                   displayUserDetails(bestMatch.label);

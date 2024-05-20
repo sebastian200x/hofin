@@ -11,16 +11,17 @@
 
 .left {
     background-color: #f1f1f1;
-    width: 40%;
+    width: 30%;
     height: 100%;
     position: fixed;
     padding-top: 200px;
+    
 }
 
 .right {
 
     background-color: #6FB9B9;
-    width: 60%;
+    width: 70%;
     height: 100%;
     position: fixed;
     right: 0;
