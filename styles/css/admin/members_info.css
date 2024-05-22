@@ -80,7 +80,7 @@ td:last-child {
 .half {
     border: 1px solid black;
     margin-top: 30px;
-    
+
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;

@@ -77,7 +77,7 @@ function userchecker($id)
 						setTimeout(function() {
 						// Redirect to another page after 3 seconds
 						window.location.href = './admin/dashboard.php';
-						}, 3000); // 2000 milliseconds = 3 seconds
+						}, 1500); // 2000 milliseconds = 3 seconds
 					</script>";
 					return 'success';
 				} else {
@@ -90,7 +90,7 @@ function userchecker($id)
 						setTimeout(function() {
 						// Redirect to another page after 3 seconds
 						window.location.href = './member/dashboard.php';
-						}, 3000); // 2000 milliseconds = 3 seconds
+						}, 1500); // 2000 milliseconds = 3 seconds
 					</script>";
 					return 'success';
 				}
@@ -441,4 +441,83 @@ function update_password($given_name, $middle_name, $last_name, $gender, $bday, 
 	} else {
 		return 'All fields are required.';
 	}
+}
+
+
+
+//+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   ADMIN   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+
+function getinfo()
+{
+	// Establish a database connection.
+	$mysqli = connect();
+	// If there's an error in the database connection, the function will stop.
+	if (!$mysqli) {
+		return false;
+	}
+
+	// Fetch unverified members
+	$unvQuery = "
+        SELECT *
+        FROM tbl_useracc, tbl_userinfo 
+        WHERE tbl_useracc.user_id = tbl_userinfo.user_id
+            AND tbl_useracc.is_verified = 'no'
+            AND tbl_useracc.is_admin = 'no'
+            AND tbl_useracc.is_deleted = 'no'
+        ORDER BY tbl_userinfo.last_name ASC;
+    ";
+	$unvResult = $mysqli->query($unvQuery);
+	$unv = $unvResult->fetch_all(MYSQLI_ASSOC);
+
+	// Fetch incomplete property info
+	$incQuery = "
+        SELECT *
+        FROM tbl_property
+        JOIN tbl_userinfo ON tbl_property.user_id = tbl_userinfo.user_id
+        JOIN tbl_useracc ON tbl_property.user_id = tbl_useracc.user_id
+        WHERE is_admin = 'no' 
+            AND is_deleted = 'no'
+            AND is_verified = 'yes'
+            AND (blk_no IS NULL 
+            OR lot_no IS NULL 
+            OR homelot_area IS NULL 
+            OR open_space IS NULL 
+            OR sharein_loan IS NULL 
+            OR principal_interest IS NULL 
+            OR MRI IS NULL 
+            OR total IS NULL)
+    ";
+	$incResult = $mysqli->query($incQuery);
+	$inc = $incResult->fetch_all(MYSQLI_ASSOC);
+
+
+	// Fetch incomplete property info
+	$compQuery = "
+        SELECT *
+        FROM tbl_property
+        JOIN tbl_userinfo ON tbl_property.user_id = tbl_userinfo.user_id
+        JOIN tbl_useracc ON tbl_property.user_id = tbl_useracc.user_id
+        WHERE is_admin = 'no' 
+            AND is_deleted = 'no'
+            AND is_verified = 'yes'
+            AND (blk_no IS NULL 
+            OR lot_no IS NULL 
+            OR homelot_area IS NULL 
+            OR open_space IS NULL 
+            OR sharein_loan IS NULL 
+            OR principal_interest IS NULL 
+            OR MRI IS NULL 
+            OR total IS NULL)
+    ";
+	$compResult = $mysqli->query($compQuery);
+	$comp = $compResult->fetch_all(MYSQLI_ASSOC);
+
+
+
+	return [
+		'unverified_members' => $unv,
+		'incomplete_members' => $inc,
+		'completed_members' => $comp
+	];
 }
