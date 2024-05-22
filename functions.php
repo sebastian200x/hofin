@@ -447,6 +447,27 @@ function update_password($given_name, $middle_name, $last_name, $gender, $bday, 
 
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++   ADMIN   ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
+function edituser()
+{
+	if (isset($_POST['approvemember'])) {
+		$mysqli = connect();
+		$stmt = $mysqli->prepare("UPDATE tbl_useracc SET is_verified = 'yes' WHERE user_id = ?");
+		$stmt->bind_param('i', $_GET['id']);
+		$stmt->execute();
+		header('Location: members_info.php');
+		exit;
+	}
+
+	if (isset($_POST['declinemember'])) {
+		$mysqli = connect();
+		$stmt = $mysqli->prepare("DELETE FROM tbl_useracc WHERE user_id = ?");
+		$stmt->bind_param('i', $_GET['id']);
+		$stmt->execute();
+		header('Location: members_info.php');
+		exit;
+	}
+}
+
 
 function getinfo()
 {

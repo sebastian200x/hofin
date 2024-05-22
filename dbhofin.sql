@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 19, 2024 at 11:20 PM
+-- Generation Time: May 22, 2024 at 11:31 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -39,7 +39,7 @@ CREATE TABLE `tbl_face` (
 
 INSERT INTO `tbl_face` (`face_id`, `user_id`, `face_pic`) VALUES
 (1, 1, 'face/labels/Jet Dela Cruz Sebastian/'),
-(2, 2, 'face/labels/j d s/');
+(3, 2, 'face/labels/Henry Q. Factura/');
 
 -- --------------------------------------------------------
 
@@ -101,8 +101,8 @@ CREATE TABLE `tbl_useracc` (
 --
 
 INSERT INTO `tbl_useracc` (`user_id`, `username`, `password`, `email`, `is_admin`, `is_deleted`, `is_verified`) VALUES
-(1, '20240001', '$2y$10$.VGLRjQiIONSKqGF5gl3QOPwdE7kRaoRH713Cw8YGoZnwT4azYxZW', 'jetsebastian4@gmail.com', 'no', 'no', 'no'),
-(2, '20240002', '$2y$10$8TVkgvq6DO24wVjjeI1YnugXWWl8x8fh3nIWbyVNNRBpT7/PA/tV6', 'j@j.com', 'no', 'no', 'no');
+(1, '20240001', '$2y$10$i39AYN.OEx4KSE1cidzwx.bVccvE1GZGd3lum9Kysg8U1DrNBHzIa', 'jetsebastian4@gmail.com', 'no', 'no', 'no'),
+(2, '20240002', '$2y$10$i39AYN.OEx4KSE1cidzwx.bVccvE1GZGd3lum9Kysg8U1DrNBHzIa', 'jetsebastian4@gmail.com', 'no', 'no', 'no');
 
 -- --------------------------------------------------------
 
@@ -126,7 +126,7 @@ CREATE TABLE `tbl_userinfo` (
 
 INSERT INTO `tbl_userinfo` (`userinfo_id`, `user_id`, `given_name`, `middle_name`, `last_name`, `gender`, `bday`) VALUES
 (1, 1, 'Jet', 'Dela Cruz', 'Sebastian', 'Male', '2002-01-02'),
-(2, 2, 'j', 'd', 's', 'Male', '2002-01-02');
+(2, 2, 'Henry', 'Q', 'Factura', 'Male', '2002-01-02');
 
 --
 -- Indexes for dumped tables
@@ -174,7 +174,7 @@ ALTER TABLE `tbl_userinfo`
 -- AUTO_INCREMENT for table `tbl_face`
 --
 ALTER TABLE `tbl_face`
-  MODIFY `face_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `face_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `tbl_property`

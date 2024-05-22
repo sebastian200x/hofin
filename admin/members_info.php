@@ -74,22 +74,27 @@
                                             ?>
                                         </div>
                                         <div class="rowaa">
-                                            <h2>User Information</h2>
+                                            <div class="user-info">
+                                                <form action="">
+                                                    <h2>User Information</h2>
+                                                    <p><strong>Last Name:</strong> <?= $unverified['last_name'] ?></p>
+                                                    <p><strong>First Name:</strong> <?= $unverified['given_name'] ?></p>
+                                                    <p><strong>Middle Name:</strong> <?= $unverified['middle_name'] ?></p>
+                                                    <p><strong>Gender:</strong> <?= $unverified['gender'] ?></p>
+                                                    <?php
+                                                    $date = new DateTime($unverified['bday']);
+                                                    $formatted_date = $date->format('F j, Y');
+                                                    ?>
 
-                                            <p>Last Name: <?= $unverified['last_name'] ?></p>
-                                            <p>First Name: <?= $unverified['given_name'] ?></p>
-                                            <p>Middle Name: <?= $unverified['middle_name'] ?></p>
+                                                    <p><strong>Birthday:</strong> <?= $formatted_date ?></p>
+                                                    <p><strong>Email:</strong> <?= $unverified['email'] ?></p>
+                                                    <div class="buttonsss">
+                                                        <input type="submit" class="edit button" value="&#10003; Approve" name="approvemember">
+                                                        <input type="submit" class="delete button" value="&#10007; Decline" name="declinemember">
+                                                    </div>
+                                                </form>
+                                            </div>
 
-                                            <p>Gender: <?= $unverified['gender'] ?></p>
-
-                                            <?php
-                                            $date = new DateTime($unverified['bday']);
-                                            $formatted_date = $date->format('F j, Y');
-                                            ?>
-
-                                            <p>Birthday: <?= $formatted_date ?></p>
-
-                                            <p>Email: <?= $unverified['email'] ?></p>
                                         </div>
                                     </div>
                                 </div>
