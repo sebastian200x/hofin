@@ -42,185 +42,201 @@
                         <td><?= htmlspecialchars($unverified['given_name']) ?></td>
                         <td><?= htmlspecialchars($unverified['middle_name']) ?></td>
                         <td>
-                            <!-- <form method="POST" action="<?= htmlspecialchars($unverified['user_id']) ?>">
-                                <input type="submit" class="edit button" value="&#x2714; APPROVE"
-                                    formaction="<?= htmlspecialchars($unverified['user_id']) ?>"
-                                    onclick="return confirm('Are you sure you want to APPROVE <?= htmlspecialchars($unverified['given_name']) . ' ' . htmlspecialchars($unverified['last_name']) ?>?')">
-                                <input type="submit" class="delete button" value="&#x2716; DECLINE"
-                                    formaction="<?= htmlspecialchars($unverified['user_id']) ?>"
-                                    onclick="return confirm('Are you sure you want to DECLINE {{unverified[9]}} {{unverified[11]}}?')">
-                            </form> -->
-
-                            <!-- <button class="edit button" onclick="openModal(<?= $unverified['user_id'] ?>)">&#x2714;
-                                View</button> -->
-
                             <!-- Button to trigger modal -->
-                            <button type="button" class="edit button" data-toggle="modal"
-                                data-target="#view-<?= $unverified['user_id'] ?>">
+                            <button type="button" class="edit button" data-target="modal-<?= $unverified['user_id'] ?>">
                                 <i class="fa fa-eye" aria-hidden="true"></i> View
                             </button>
+                        </td>
+                    </tr>
+                    <!-- Modal -->
+                    <div id="modal-<?= $unverified['user_id'] ?>" class="modal">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-body">
+                                    <span class="close" data-target="modal-<?= $unverified['user_id'] ?>">&times;</span>
+                                    <br>
+                                    <div class="containeraaa">
+                                        <div class="rowaa">
+                                            <?php
+                                            $pic = $unverified['face_pic'];
+                                            $pic_path = '/hofin/' . $pic . '/0.jpg';
+                                            if (!empty($pic) && file_exists($_SERVER['DOCUMENT_ROOT'] . $pic_path)) {
+                                                ?>
+                                                <img draggable="false" src="<?php echo $pic_path; ?>" alt="Profile pic"
+                                                    class="img-fluid" />
+                                                <?php
+                                            } else {
+                                                ?>
+                                                <img draggable="false" src="/hofin/face/noprofile.jpg" alt="Profile pic"
+                                                    class="img-fluid" />
+                                                <?php
+                                            }
+                                            ?>
+                                        </div>
+                                        <div class="rowaa">
+                                            <h2>User Information</h2>
 
-                            <!-- Modal -->
-                            <div class="modal fade" id="view-<?= $unverified['user_id'] ?>" tabindex="-1" role="dialog"
-                                aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
-                                <div class="modal-dialog" role="document">
-                                    <div class="modal-content">
-                                        <div class="modal-body">
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
-                                            <br>
-                                            <div class="containeraaa">
-                                                <div class="rowaa">
-                                                    <?php
-                                                    $pic = $unverified['face_pic'];
-                                                    if ((isset($pic)) && $pic != false) {
-                                                        ?>
-                                                        <img draggable="false" src="/hofin/<?php echo $pic; ?>/0.jpg"
-                                                            alt="Profile pic" class="img-fluid" />
-                                                        <?php
-                                                    } else {
-                                                        ?>
-                                                        <img draggable="false" src="/hofin/face/noprofile.jpg" alt="Profile pic"
-                                                            class="img-fluid" />
-                                                        <?php
-                                                    }
-                                                    ?>
-                                                </div>
-                                                <div class="rowaa">
-                                                    <h5 class="intro-title">Intro Title</h5>
-                                                    <h3>TITLE</h3>
-                                                    <p>Some other content, some other content</p>
-                                                </div>
-                                            </div>
+                                            <p>Last Name: <?= $unverified['last_name'] ?></p>
+                                            <p>First Name: <?= $unverified['given_name'] ?></p>
+                                            <p>Middle Name: <?= $unverified['middle_name'] ?></p>
+
+                                            <p>Gender: <?= $unverified['gender'] ?></p>
+
+                                            <?php
+                                            $date = new DateTime($unverified['bday']);
+                                            $formatted_date = $date->format('F j, Y');
+                                            ?>
+
+                                            <p>Birthday: <?= $formatted_date ?></p>
+
+                                            <p>Email: <?= $unverified['email'] ?></p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        document.addEventListener('DOMContentLoaded', function () {
+                            // Get all the buttons that open a modal
+                            var buttons = document.querySelectorAll('.edit.button');
+                            buttons.forEach(function (button) {
+                                button.addEventListener('click', function () {
+                                    var target = button.getAttribute('data-target');
+                                    var modal = document.getElementById(target);
+                                    if (modal) {
+                                        modal.style.display = 'block';
+                                    }
+                                });
+                            });
+
+                            // Get all the elements that close a modal
+                            var closeButtons = document.querySelectorAll('.close');
+                            closeButtons.forEach(function (button) {
+                                button.addEventListener('click', function () {
+                                    var target = button.getAttribute('data-target');
+                                    var modal = document.getElementById(target);
+                                    if (modal) {
+                                        modal.style.display = 'none';
+                                    }
+                                });
+                            });
 
 
-                            <!-- Bootstrap JS and dependencies -->
-                            <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-                            <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-                            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-        </body>
+                            // Close the modal if the user clicks anywhere outside of the modal content
+                            window.addEventListener('click', function (event) {
+                                if (event.target.classList.contains('modal')) {
+                                    event.target.style.display = 'none';
+                                }
+                            });
+                        });
 
-        <!-- <div id="modal-<?= $unverified['user_id'] ?>" class="modal">
-                                <div class="modal-content">
-                                    <span class="close" onclick="closeModal(<?= $unverified['user_id'] ?>)">&times;</span>
-                                    <h2>User Information</h2>
-                                    <p>User ID: <?= $unverified['user_id'] ?></p>
-                                    <p>Email: <?= $unverified['user_id'] ?></p>
-                                    <p>Last Name: <?= $unverified['user_id'] ?></p>
-                                    <p>First Name: <?= $unverified['user_id'] ?></p>
-                                    <p>Middle Name: <?= $unverified['user_id'] ?></p>
-                                    <p>Address: <?= $unverified['user_id'] ?></p>
-                                    <p>Contact Number: <?= $unverified['user_id'] ?></p>
-                                    <p>Birthdate: <?= $unverified['user_id'] ?></p>
-                                    <p>Gender: <?= $unverified['user_id'] ?></p>
-                                    <p>User Type: <?= $unverified['user_id'] ?></p>
-                                </div>
-                            </div> -->
-
-        </td>
-        <td hidden>Search not found.</td>
-        </tr>
-    <?php }
+                        document.addEventListener('keydown', function (event) {
+                            if (event.key === 'Escape') {
+                                var modals = document.querySelectorAll('.modal');
+                                modals.forEach(function (modal) {
+                                    modal.style.display = 'none';
+                                });
+                            }
+                        });
+                    </script>
+                <?php }
             } else { ?>
-    <tr>
-        <td colspan="6">No unverified users found.</td>
-    </tr>
-<?php } ?>
-</table>
-</div>
-
-
-
-<div class="half">
-    <div class="half-half">
-        <h2>Incomplete User Information:</h2>
-    </div>
-    <div class="half-half">
-        <input type="text" id="searchIncomplete" class="search-input"
-            onkeyup="filterTable('searchIncomplete', 'incompleteTable')" placeholder="Search for names...">
-    </div>
-</div>
-<div class="scrollable">
-    <table id="incompleteTable" class="table">
-        <tr>
-            <th class="sort-btn" onclick="sortTable(0, 'incompleteTable')">Last Name</th>
-            <th class="sort-btn" onclick="sortTable(1, 'incompleteTable')">First Name</th>
-            <th class="sort-btn" onclick="sortTable(2, 'incompleteTable')">Middle Name</th>
-            <th>Action</th>
-            <!-- Add more column headers as per your table structure -->
-        </tr>
-        <?php if (count($data['incomplete_members']) != 0) { ?>
-            <?php foreach ($data['incomplete_members'] as $incomplete) { ?>
                 <tr>
-                    <td><?= htmlspecialchars($incomplete['last_name']) ?></td>
-                    <td><?= htmlspecialchars($incomplete['given_name']) ?></td>
-                    <td><?= htmlspecialchars($incomplete['middle_name']) ?></td>
-                    <td>
-                        <form method="POST" action="<?= htmlspecialchars($unverified['user_id']) ?>">
-                            <input type="submit" class="edit button" value="&#xf044; EDIT">
-                            <input type="submit" class="delete button" value="&#xf2ed; DELETE"
-                                formaction="/admin/delete_info/{{incs[1]}}"
-                                onclick="return confirm('Are you sure you want to delete this account?')">
-                        </form>
-                    </td>
-                    <td hidden>Search not found.</td>
+                    <td colspan="6">No unverified users found.</td>
                 </tr>
-            <?php }
-        } else { ?>
+            <?php } ?>
+        </table>
+    </div>
+
+
+
+    <div class="half">
+        <div class="half-half">
+            <h2>Incomplete User Information:</h2>
+        </div>
+        <div class="half-half">
+            <input type="text" id="searchIncomplete" class="search-input"
+                onkeyup="filterTable('searchIncomplete', 'incompleteTable')" placeholder="Search for names...">
+        </div>
+    </div>
+    <div class="scrollable">
+        <table id="incompleteTable" class="table">
             <tr>
-                <td colspan="6">No unverified users found.</td>
+                <th class="sort-btn" onclick="sortTable(0, 'incompleteTable')">Last Name</th>
+                <th class="sort-btn" onclick="sortTable(1, 'incompleteTable')">First Name</th>
+                <th class="sort-btn" onclick="sortTable(2, 'incompleteTable')">Middle Name</th>
+                <th>Action</th>
+                <!-- Add more column headers as per your table structure -->
             </tr>
-        <?php } ?>
-    </table>
-</div>
-
-
-<div class="half">
-    <div class="half-half">
-        <h2>Complete User Information:</h2>
-    </div>
-    <div class="half-half">
-        <input type="text" id="searchComplete" class="search-input"
-            onkeyup="filterTable('searchComplete', 'completeTable')" placeholder="Search for names...">
-    </div>
-</div>
-
-<div class="scrollable">
-    <table id="completeTable" class="table">
-        <tr>
-            <th class="sort-btn" onclick="sortTable(0, 'completeTable')">Last Name</th>
-            <th class="sort-btn" onclick="sortTable(1, 'completeTable')">First Name</th>
-            <th class="sort-btn" onclick="sortTable(2, 'completeTable')">Middle Name</th>
-            <th>Action</th>
-        </tr>
-        <?php if (count($data['completed_members']) != 0) { ?>
-            <?php foreach ($data['completed_members'] as $complete) { ?>
+            <?php if (count($data['incomplete_members']) != 0) { ?>
+                <?php foreach ($data['incomplete_members'] as $incomplete) { ?>
+                    <tr>
+                        <td><?= htmlspecialchars($incomplete['last_name']) ?></td>
+                        <td><?= htmlspecialchars($incomplete['given_name']) ?></td>
+                        <td><?= htmlspecialchars($incomplete['middle_name']) ?></td>
+                        <td>
+                            <form method="POST" action="<?= htmlspecialchars($unverified['user_id']) ?>">
+                                <input type="submit" class="edit button" value="&#xf044; EDIT">
+                                <input type="submit" class="delete button" value="&#xf2ed; DELETE"
+                                    formaction="/admin/delete_info/{{incs[1]}}"
+                                    onclick="return confirm('Are you sure you want to delete this account?')">
+                            </form>
+                        </td>
+                        <td hidden>Search not found.</td>
+                    </tr>
+                <?php }
+            } else { ?>
                 <tr>
-                    <td><?= htmlspecialchars($complete['last_name']) ?></td>
-                    <td><?= htmlspecialchars($complete['given_name']) ?></td>
-                    <td><?= htmlspecialchars($complete['middle_name']) ?></td>
-                    <td>
-                        <form method="POST" action="<?= htmlspecialchars($unverified['user_id']) ?>">
-                            <input type="submit" class="edit button" value="&#xf044; EDIT">
-                            <input type="submit" class="delete button" value="&#xf2ed; DELETE"
-                                formaction="/admin/delete_info/{{incs[1]}}"
-                                onclick="return confirm('Are you sure you want to delete this account?')">
-                        </form>
-                    </td>
-                    <td hidden>Search not found.</td>
+                    <td colspan="6">No unverified users found.</td>
                 </tr>
-            <?php }
-        } else { ?>
+            <?php } ?>
+        </table>
+    </div>
+
+
+    <div class="half">
+        <div class="half-half">
+            <h2>Complete User Information:</h2>
+        </div>
+        <div class="half-half">
+            <input type="text" id="searchComplete" class="search-input"
+                onkeyup="filterTable('searchComplete', 'completeTable')" placeholder="Search for names...">
+        </div>
+    </div>
+
+    <div class="scrollable">
+        <table id="completeTable" class="table">
             <tr>
-                <td colspan="6">No unverified users found.</td>
+                <th class="sort-btn" onclick="sortTable(0, 'completeTable')">Last Name</th>
+                <th class="sort-btn" onclick="sortTable(1, 'completeTable')">First Name</th>
+                <th class="sort-btn" onclick="sortTable(2, 'completeTable')">Middle Name</th>
+                <th>Action</th>
             </tr>
-        <?php } ?>
-</div>
+            <?php if (count($data['completed_members']) != 0) { ?>
+                <?php foreach ($data['completed_members'] as $complete) { ?>
+                    <tr>
+                        <td><?= htmlspecialchars($complete['last_name']) ?></td>
+                        <td><?= htmlspecialchars($complete['given_name']) ?></td>
+                        <td><?= htmlspecialchars($complete['middle_name']) ?></td>
+                        <td>
+                            <form method="POST" action="<?= htmlspecialchars($unverified['user_id']) ?>">
+                                <input type="submit" class="edit button" value="&#xf044; EDIT">
+                                <input type="submit" class="delete button" value="&#xf2ed; DELETE"
+                                    formaction="/admin/delete_info/{{incs[1]}}"
+                                    onclick="return confirm('Are you sure you want to delete this account?')">
+                            </form>
+                        </td>
+                        <td hidden>Search not found.</td>
+                    </tr>
+                <?php }
+            } else { ?>
+                <tr>
+                    <td colspan="6">No unverified users found.</td>
+                </tr>
+            <?php } ?>
+    </div>
 
 </body>
 

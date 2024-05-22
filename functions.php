@@ -462,6 +462,7 @@ function getinfo()
         SELECT *
         FROM tbl_useracc, tbl_userinfo, tbl_face
         WHERE tbl_useracc.user_id = tbl_userinfo.user_id
+			AND tbl_useracc.user_id = tbl_face.user_id
             AND tbl_useracc.is_verified = 'no'
             AND tbl_useracc.is_admin = 'no'
             AND tbl_useracc.is_deleted = 'no'

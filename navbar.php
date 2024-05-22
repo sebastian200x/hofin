@@ -32,11 +32,12 @@ require ($_SERVER['DOCUMENT_ROOT'] . '/hofin/functions.php');
         $id = (isset($_SESSION['user_id']));
         $pic = getpic($id);
         // echo $pic;
+        
         if ((isset($pic)) && $pic != false) {
           ?>
           <img draggable="false" src="/hofin/<?php echo $pic; ?>/0.jpg" alt="User" />
           <?php
-        } else if ((!isset($pic))) {
+        } else if ((!isset($pic)) || $pic != false) {
           ?>
             <img draggable="false" src="/hofin/face/noprofile.jpg" alt="User" />
           <?php
