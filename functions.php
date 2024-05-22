@@ -335,47 +335,44 @@ function login($username, $password)
 		}
 	}
 
+
+
 	if (!isset($_SESSION['login_attempts'])) {
-		$_SESSION['login_attempts'] = [];
-	}
-
-	if (!isset($_SESSION['login_attempts'][$username])) {
-		$_SESSION['login_attempts'][$username] = 1;
+		$_SESSION['login_attempts'] = 1;
 	} else {
-		$_SESSION['login_attempts'][$username]++;
+		$_SESSION['login_attempts']++;
 	}
 
-	if ($_SESSION['login_attempts'][$username] > $max_attempts) {
+	if ($_SESSION['login_attempts'] > $max_attempts) {
 		if (!isset($_SESSION['last_attempt'])) {
 			$_SESSION['last_attempt'] = time();
 		}
 	}
 
 	if (
-		$_SESSION['login_attempts'][$username] >= 3 &&
+		$_SESSION['login_attempts'] >= 3 &&
 		(time() - $_SESSION['last_attempt']) > $lockout_time
 	) {
-		$_SESSION['login_attempts'][$username] = 1;
+		$_SESSION['login_attempts'] = 1;
 		$_SESSION['last_attempt'] = null;
 	}
 
 	if (
-		$_SESSION['login_attempts'][$username] > $max_attempts &&
+		$_SESSION['login_attempts'] > $max_attempts &&
 		(time() - $_SESSION['last_attempt']) < $lockout_time
 	) {
 		// Account is locked
-		$_SESSION['login_attempts'][$username] = 3;
+		$_SESSION['login_attempts'] = 3;
 		$remaining_time = $lockout_time - (time() - $_SESSION['last_attempt']);
 		return "Account is locked. Please try again in <span id='remainingTime'>$remaining_time</span> seconds.";
 	}
-
 	if ($data == NULL || password_verify($password, $data["password"]) == false) {
-		if ($_SESSION['login_attempts'][$username] >= 3) {
+		if ($_SESSION['login_attempts'] >= 3) {
 			$_SESSION['last_attempt'] = time();
 		}
 		return "Wrong username or password";
 	} else {
-		unset($_SESSION['login_attempts'][$username]);
+		unset($_SESSION['login_attempts']);
 		unset($_SESSION['last_attempt']);
 		$id = $data["user_id"];
 		return userchecker($id);
