@@ -114,6 +114,104 @@ th {
 }
 
 
+
+
+.edit.button {
+    background-color: #28a745;
+    /* Green background */
+    color: white;
+    /* White text */
+    border: none;
+    /* No border */
+    padding: 10px 20px;
+    /* Padding */
+    font-size: 16px;
+    /* Font size */
+    cursor: pointer;
+    /* Pointer/hand icon */
+    border-radius: 5px;
+    /* Rounded corners */
+    transition: background-color 0.3s;
+    /* Smooth transition */
+}
+
+.edit.button:hover {
+    background-color: #218838;
+    /* Darker green on hover */
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+
+    overflow: auto;
+
+    background-color: rgba(0, 0, 0, 0.4);
+
+}
+
+.modal-dialog {
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    background-color: white;
+    border-radius: 10px;
+}
+
+.modal-content {
+    padding: 20px;
+    /* Padding inside the modal */
+}
+
+
+.intro-title {
+    color: #6c757d;
+    /* Gray color */
+}
+
+h3 {
+    color: #343a40;
+    /* Dark gray color */
+}
+
+p {
+    color: #6c757d;
+    /* Gray color */
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.containeraaa {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.rowaa {
+    width: 50%;
+}
+
+
+
+
+
 /* responsive */
 @media screen and (max-width:500px) {
 
