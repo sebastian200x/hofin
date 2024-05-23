@@ -33,7 +33,7 @@ require ($_SERVER['DOCUMENT_ROOT'] . '/hofin/functions.php');
         $pic = getpic($id);
         // echo $pic;
         
-        if ((isset($pic)) && $pic != false) {
+        if (!empty($pic) && file_exists($_SERVER['DOCUMENT_ROOT'] . $pic)) {
           ?>
           <img draggable="false" src="/hofin/<?php echo $pic; ?>/0.jpg" alt="User" />
           <?php
@@ -62,8 +62,12 @@ require ($_SERVER['DOCUMENT_ROOT'] . '/hofin/functions.php');
           <a href="<?php $_SERVER['DOCUMENT_ROOT'] ?>/hofin/admin/dashboard.php" draggable="false"><i
               class="fa-solid fa-gauge"></i> Dashboard</a>
         </li>
-        <li class="item {% if request.path == '/admin/members_info' %}active{% endif %}"><a href="/admin/members_info"
-            draggable="false"><i class="fa-solid fa-address-book"></i> Members Info</a></li>
+        <li class="item <?php if ($current_page == 'index.php') {
+          echo 'active';
+        } else {
+          echo "";
+        } ?>"><a href="<?php $_SERVER['DOCUMENT_ROOT'] ?>/hofin/admin/members_info.php" draggable="false"><i class="fa-solid fa-address-book"></i> Members
+            Info</a></li>
         <li class="title">Payment Management</li>
         <li class="item {% if request.path == '/admin/payment_arrangement' %}active{% endif %}"><a
             href="/admin/payment_arrangement" draggable="false"><i class="fa-solid fa-note-sticky"></i> Payment

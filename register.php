@@ -200,7 +200,10 @@
             .catch(error => {
                 console.error('Error accessing camera:', error);
                 document.getElementById('alert').hidden = false;
+                captureBtn.disabled = true;
+                submitBtn.disabled = true;
             });
+
         captureBtn.addEventListener('click', () => {
             if (captureCount < 3) { // Capture three images
                 const canvas = document.createElement('canvas');

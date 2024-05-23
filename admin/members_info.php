@@ -89,8 +89,15 @@
                                                     <p><strong>Birthday:</strong> <?= $formatted_date ?></p>
                                                     <p><strong>Email:</strong> <?= $unverified['email'] ?></p>
                                                     <div class="buttonsss">
-                                                        <input type="submit" class="edit button" value="&#10003; Approve" name="approvemember">
-                                                        <input type="submit" class="delete button" value="&#10007; Decline" name="declinemember">
+                                                        <!-- <input type="submit" class="edit button" value="&#10003; Approve"
+                                                            name="approvemember">
+                                                        <input type="submit" class="delete button" value="&#10007; Decline"
+                                                            name="declinemember"> -->
+
+                                                        <button class="edit button">&#10003; Approve</button>
+                                                        <button class="delete button">&#10007; Decline</button>
+
+
                                                     </div>
                                                 </form>
                                             </div>
